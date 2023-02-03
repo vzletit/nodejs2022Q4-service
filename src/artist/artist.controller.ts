@@ -6,6 +6,7 @@ import {
   Body,
   Delete,
   Put,
+  HttpCode,
 } from '@nestjs/common';
 import { ArtistService } from './artist.service';
 import { CreateArtistDto } from './dto/create-artist-dto';
@@ -48,6 +49,7 @@ export class ArtistController {
   }
 
   @Delete('/:artistId')
+  @HttpCode(204)
   deleteArtist(@Param('artistId', ParseUUIDPipe) artistId: string) {
     const artist = this.artistService.getArtist(artistId);
     if (!artist) {

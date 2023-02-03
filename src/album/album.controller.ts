@@ -6,6 +6,7 @@ import {
   Body,
   Delete,
   Put,
+  HttpCode,
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
 import { CreateAlbumDto } from './dto/create-album-dto';
@@ -48,6 +49,7 @@ export class AlbumController {
   }
 
   @Delete('/:albumId')
+  @HttpCode(204)
   deleteAlbum(@Param('albumId', ParseUUIDPipe) albumId: string) {
     const album = this.albumService.getAlbum(albumId);
     if (!album) {

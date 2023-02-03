@@ -6,6 +6,7 @@ import {
   Body,
   Delete,
   Put,
+  HttpCode,
 } from '@nestjs/common';
 import { TrackService } from './track.service';
 import { CreateTrackDto } from './dto/create-track-dto';
@@ -48,6 +49,7 @@ export class TrackController {
   }
 
   @Delete('/:trackId')
+  @HttpCode(204)
   deleteTrack(@Param('trackId', ParseUUIDPipe) trackId: string) {
     const track = this.trackService.getTrack(trackId);
     if (!track) {
