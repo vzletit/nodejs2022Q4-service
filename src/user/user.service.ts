@@ -8,7 +8,8 @@ export class UserService {
   constructor(private dbService: DbService) {}
 
   getUsers() {
-    return this.dbService.getMany('users');
+    const users = this.dbService.getMany('users');
+    return users.map((user) => ({ id: user.id, login: user.login }));
   }
 
   getUser(userId: string) {
@@ -16,22 +17,20 @@ export class UserService {
   }
 
   createUser(createUserDto: CreateUserDto) {
-    return this.dbService.addOne('users', createUserDto);
+    const createdUser = this.dbService.addOne('users', createUserDto);
+    const returnUserObj = { ...createdUser };
+    delete returnUserObj.password;
+    return returnUserObj;
   }
 
   updatePassword(updatePassword: UpdatePasswordDto, userId: string) {
-    const { oldPassword, newPassword } = updatePassword;
-    const user = this.dbService.getOne('users', userId);
-    if (!user) {
-      return Error('User not found');
-    }
-    if (user.password !== oldPassword) {
-      return Error('Old password does not match');
-    }
-    return this.dbService.updateOne('users', userId, { password: newPassword });
+    const { newPassword } = updatePassword;
+    this.dbService.updateOne('users', userId, {
+      password: newPassword,
+    });
   }
 
   deleteUser(userId: string) {
-    return { userId, message: 'user deleted' };
+    this.dbService.deleteOne('users', userId);
   }
 }

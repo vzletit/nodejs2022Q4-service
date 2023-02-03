@@ -10,58 +10,51 @@ import {
 import { TrackService } from './track.service';
 import { CreateTrackDto } from './dto/create-track-dto';
 import { UpdateTrackDto } from './dto/update-track-dto';
+import { ParseUUIDPipe, NotFoundException } from '@nestjs/common';
 
 @Controller('/track')
 export class TrackController {
   constructor(private trackService: TrackService) {}
 
   @Get()
-
-  // GET /track - get all tracks
-  // Server should answer with status code 200 and all tracks records
   getTracks() {
     return this.trackService.getTracks();
   }
 
-  // GET /track/:id - get single track by id
-  // Server should answer with status code 200 and and record with id === trackId if it exists
-  // Server should answer with status code 400 and corresponding message if trackId is invalid (not uuid)
-  // Server should answer with status code 404 and corresponding message if record with id === trackId doesn't exist
-
   @Get('/:trackId')
-  getTrack(@Param('trackId') trackId: string) {
-    return this.trackService.getTrack(trackId);
+  getUser(@Param('trackId', ParseUUIDPipe) trackId: string) {
+    const track = this.trackService.getTrack(trackId);
+    if (!track) {
+      throw new NotFoundException(`Track ID ${trackId} not found`);
+    }
+    return track;
   }
-
-  // POST /track - create new track
-  // Server should answer with status code 201 and newly created record if request is valid
-  // Server should answer with status code 400 and corresponding message if request body does not contain required fields
 
   @Post()
   createTrack(@Body() createTrackDto: CreateTrackDto) {
     return this.trackService.createTrack(createTrackDto);
   }
 
-  // PUT /track/:id - update track info
-  // Server should answer with status code 200 and updated record if request is valid
-  // Server should answer with status code 400 and corresponding message if trackId is invalid (not uuid)
-  // Server should answer with status code 404 and corresponding message if record with id === trackId doesn't exist
-
   @Put('/:trackId')
   updateTrack(
-    @Body() updatePasswordDto: UpdateTrackDto,
-    @Param('trackId') trackId: string,
+    @Body() updateTrackDto: UpdateTrackDto,
+    @Param('trackId', ParseUUIDPipe) trackId: string,
   ) {
-    return this.trackService.updateTrack(updatePasswordDto, trackId);
+    const track = this.trackService.getTrack(trackId);
+    if (!track) {
+      throw new NotFoundException(`Track ID ${trackId} not found`);
+    }
+    return this.trackService.updateTrack(updateTrackDto, trackId);
   }
 
-  // DELETE /track/:id - delete track
-  // Server should answer with status code 204 if the record is found and deleted
-  // Server should answer with status code 400 and corresponding message if trackId is invalid (not uuid)
-  // Server should answer with status code 404 and corresponding message if record with id === trackId doesn't exist
-
   @Delete('/:trackId')
-  deleteTrack(@Param('trackId') trackId: string) {
-    return this.trackService.deleteTrack(trackId);
+  deleteTrack(@Param('trackId', ParseUUIDPipe) trackId: string) {
+    const track = this.trackService.getTrack(trackId);
+    if (!track) {
+      throw new NotFoundException(`Track ID ${trackId} not found`);
+    }
+
+    this.trackService.deleteTrack(trackId);
+    return { message: 'Track deleted successfully' };
   }
 }

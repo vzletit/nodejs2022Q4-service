@@ -8,24 +8,24 @@ export class ArtistService {
   constructor(private dbService: DbService) {}
 
   getArtists() {
-    // return { message: 'All artists' };
-    //return this.dbService.getUsers();
+    return this.dbService.getMany('artists');
   }
 
   getArtist(artistId: string) {
-    return { artistId, message: 'Artist by id' };
+    return this.dbService.getOne('artists', artistId);
   }
 
-  createArtist(createUserDto: CreateArtistDto) {
-    console.log('CREATE Artist', createUserDto);
-    return { message: 'create Artist' };
+  createArtist(createArtistDto: CreateArtistDto) {
+    return this.dbService.addOne('artists', createArtistDto);
   }
 
-  updateArtist(updatePassword: UpdateArtistDto, artistId: string) {
-    return { artistId, message: 'password updated' };
+  updateArtist(updateArtistDto: UpdateArtistDto, artistId: string) {
+    return this.dbService.updateOne('artists', artistId, {
+      ...updateArtistDto,
+    });
   }
 
   deleteArtist(artistId: string) {
-    return { artistId, message: 'Artist deleted' };
+    this.dbService.deleteOne('artists', artistId);
   }
 }
