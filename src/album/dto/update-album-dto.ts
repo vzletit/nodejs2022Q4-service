@@ -11,10 +11,3 @@ export class UpdateAlbumDto {
   @IsString()
   artistId: string;
 }
-
-// interface Album {
-//   id: string; // uuid v4
-//   name: string;
-//   year: number;
-//   artistId: string | null; // refers to Artist
-// }

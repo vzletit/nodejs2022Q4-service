@@ -6,9 +6,3 @@ export class UpdateArtistDto {
   @IsBoolean()
   grammy: boolean;
 }
-
-// interface Artist {
-//   id: string; // uuid v4
-//   name: string;
-//   grammy: boolean;
-// }
