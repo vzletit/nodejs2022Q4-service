@@ -39,6 +39,12 @@ export class UserService {
       version: version + 1,
       password: newPassword,
     });
+
+    const updatedUser = this.dbService.getOne('users', userId);
+
+    const returnUserObj = { ...updatedUser };
+    delete returnUserObj.password;
+    return returnUserObj;
   }
 
   deleteUser(userId: string) {

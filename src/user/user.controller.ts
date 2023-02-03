@@ -15,6 +15,7 @@ import {
   ParseUUIDPipe,
   NotFoundException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 
 @Controller('user')
@@ -51,13 +52,10 @@ export class UserController {
     }
 
     if (user.password !== updatePasswordDto.oldPassword) {
-      console.log(user.password);
-      console.log(updatePasswordDto.oldPassword);
-      throw new BadRequestException('Current password is incorrect');
+      throw new ForbiddenException('Current password is incorrect');
     }
 
-    this.userService.updatePassword(updatePasswordDto, userId);
-    return { message: 'Password updated successfully' };
+    return this.userService.updatePassword(updatePasswordDto, userId);
   }
 
   @Delete('/:userId')

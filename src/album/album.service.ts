@@ -39,6 +39,6 @@ export class AlbumService {
       valueId: albumId,
     });
 
-    this.dbService.deleteOne('album', albumId);
+    this.dbService.deleteOne('albums', albumId);
   }
 }

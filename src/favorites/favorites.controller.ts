@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Post, Delete, HttpCode } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import {
   ParseUUIDPipe,
@@ -40,6 +40,7 @@ export class FavoritesController {
   }
 
   @Delete('/track/:trackId')
+  @HttpCode(204)
   removeTrackFromFavs(@Param('trackId', ParseUUIDPipe) trackId: string) {
     const track = this.trackService.getTrack(trackId);
     if (!track) {
@@ -69,6 +70,7 @@ export class FavoritesController {
   }
 
   @Delete('/album/:albumId')
+  @HttpCode(204)
   removeAlbumFromFavs(@Param('albumId', ParseUUIDPipe) albumId: string) {
     const album = this.albumService.getAlbum(albumId);
     if (!album) {
@@ -99,6 +101,7 @@ export class FavoritesController {
   }
 
   @Delete('/artist/:artistId')
+  @HttpCode(204)
   removeArtistFromFavs(@Param('artistId', ParseUUIDPipe) artistId: string) {
     const artist = this.artistService.getArtist(artistId);
     if (!artist) {
