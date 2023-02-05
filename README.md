@@ -1,21 +1,35 @@
 # Home Library Service
 
+Demo REST API online library for storing music tracks, artists and their albums with the ability to add to favorites. Under the hood uses NestJS and in-memory database.
+
 ## Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
 
-## Downloading
-
+## Downloading and installing
+Clone the repository:
 ```
-git clone {repository URL}
+git clone https://github.com/vzletit/nodejs2022Q4-service.git
+```
+Change directory:
+
+```bash
+cd nodejs2022Q4-service 
+```
+Switch to **dev** branch:
+
+```bash
+got checkout dev
 ```
 
-## Installing NPM modules
+Install NPM modules
 
 ```
 npm install
 ```
+Rename *example.env* to *.env*
+
 
 ## Running application
 
@@ -23,8 +37,7 @@ npm install
 npm start
 ```
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
+After starting the app on port (4000 as default. Can be changed in *.env*) you can open in your browser OpenAPI Swagger http://localhost:4000.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
 ## Testing
@@ -43,17 +56,6 @@ To run only one of all test suites
 npm run test -- <path to suite>
 ```
 
-To run all test with authorization
-
-```
-npm run test:auth
-```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
-```
 
 ### Auto-fix and format
 
@@ -64,9 +66,3 @@ npm run lint
 ```
 npm run format
 ```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
