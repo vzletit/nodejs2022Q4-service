@@ -18,38 +18,38 @@ export class ArtistController {
   constructor(private artistService: ArtistService) {}
 
   @Get()
-  getArtists() {
+  async getArtists() {
     return this.artistService.getArtists();
   }
 
   @Get('/:artistId')
-  getUser(@Param('artistId', ParseUUIDPipe) artistId: string) {
-    const artist = this.artistService.getArtist(artistId);
-    handleNotFound(artist);
+  async getUser(@Param('artistId', ParseUUIDPipe) artistId: string) {
+    const artist = await this.artistService.getArtist(artistId);
+    await handleNotFound(artist);
     return artist;
   }
 
   @Post()
-  createArtist(@Body() createArtistDto: ArtistDto) {
-    return this.artistService.createArtist(createArtistDto);
+  async createArtist(@Body() createArtistDto: ArtistDto) {
+    return await this.artistService.createArtist(createArtistDto);
   }
 
   @Put('/:artistId')
-  updateArtist(
+  async updateArtist(
     @Body() updateArtistDto: ArtistDto,
     @Param('artistId', ParseUUIDPipe) artistId: string,
   ) {
-    const artist = this.artistService.getArtist(artistId);
-    handleNotFound(artist);
-    return this.artistService.updateArtist(updateArtistDto, artistId);
+    const artist = await this.artistService.getArtist(artistId);
+    await handleNotFound(artist);
+    return await this.artistService.updateArtist(updateArtistDto, artistId);
   }
 
   @Delete('/:artistId')
   @HttpCode(204)
-  deleteArtist(@Param('artistId', ParseUUIDPipe) artistId: string) {
-    const artist = this.artistService.getArtist(artistId);
-    handleNotFound(artist);
-    this.artistService.deleteArtist(artistId);
+  async deleteArtist(@Param('artistId', ParseUUIDPipe) artistId: string) {
+    const artist = await this.artistService.getArtist(artistId);
+    await handleNotFound(artist);
+    await this.artistService.deleteArtist(artistId);
     return { message: 'Artist deleted successfully' };
   }
 }

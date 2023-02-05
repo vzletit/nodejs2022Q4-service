@@ -8,29 +8,29 @@ import { randomUUID } from 'crypto';
 export class ArtistService {
   constructor(private dbService: DbService, private utils: Utils) {}
 
-  getArtists() {
-    return this.dbService.getMany('artists');
+  async getArtists() {
+    return await this.dbService.getMany('artists');
   }
 
-  getArtist(artistId: string) {
-    return this.dbService.getOne('artists', artistId);
+  async getArtist(artistId: string) {
+    return await this.dbService.getOne('artists', artistId);
   }
 
-  createArtist(createArtistDto: ArtistDto) {
-    return this.dbService.addOne('artists', {
+  async createArtist(createArtistDto: ArtistDto) {
+    return await this.dbService.addOne('artists', {
       ...createArtistDto,
       id: randomUUID(),
     });
   }
 
-  updateArtist(updateArtistDto: ArtistDto, artistId: string) {
-    return this.dbService.updateOne('artists', artistId, {
+  async updateArtist(updateArtistDto: ArtistDto, artistId: string) {
+    return await this.dbService.updateOne('artists', artistId, {
       ...updateArtistDto,
     });
   }
 
-  deleteArtist(artistId: string) {
-    this.dbService.deleteOne('favorites/artists', artistId);
+  async deleteArtist(artistId: string) {
+    await this.dbService.deleteOne('favorites/artists', artistId);
 
     this.utils.nullAnyMention('tracks', {
       nameId: 'artistId',
@@ -42,6 +42,6 @@ export class ArtistService {
       valueId: artistId,
     });
 
-    this.dbService.deleteOne('artists', artistId);
+    await this.dbService.deleteOne('artists', artistId);
   }
 }

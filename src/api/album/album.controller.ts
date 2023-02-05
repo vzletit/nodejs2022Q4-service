@@ -18,38 +18,38 @@ export class AlbumController {
   constructor(private albumService: AlbumService) {}
 
   @Get()
-  getAlbums() {
+  async getAlbums() {
     return this.albumService.getAlbums();
   }
 
   @Get('/:albumId')
-  getAlbum(@Param('albumId', ParseUUIDPipe) albumId: string) {
-    const album = this.albumService.getAlbum(albumId);
-    handleNotFound(album);
+  async getAlbum(@Param('albumId', ParseUUIDPipe) albumId: string) {
+    const album = await this.albumService.getAlbum(albumId);
+    await handleNotFound(album);
     return album;
   }
 
   @Post()
-  createAlbum(@Body() createAlbumDto: AlbumDto) {
-    return this.albumService.createAlbum(createAlbumDto);
+  async createAlbum(@Body() createAlbumDto: AlbumDto) {
+    return await this.albumService.createAlbum(createAlbumDto);
   }
 
   @Put('/:albumId')
-  updateAlbum(
+  async updateAlbum(
     @Body() updateAlbumDto: AlbumDto,
     @Param('albumId', ParseUUIDPipe) albumId: string,
   ) {
-    const album = this.albumService.getAlbum(albumId);
-    handleNotFound(album);
-    return this.albumService.updateAlbum(updateAlbumDto, albumId);
+    const album = await this.albumService.getAlbum(albumId);
+    await handleNotFound(album);
+    return await this.albumService.updateAlbum(updateAlbumDto, albumId);
   }
 
   @Delete('/:albumId')
   @HttpCode(204)
-  deleteAlbum(@Param('albumId', ParseUUIDPipe) albumId: string) {
-    const album = this.albumService.getAlbum(albumId);
-    handleNotFound(album);
-    this.albumService.deleteAlbum(albumId);
+  async deleteAlbum(@Param('albumId', ParseUUIDPipe) albumId: string) {
+    const album = await this.albumService.getAlbum(albumId);
+    await handleNotFound(album);
+    await this.albumService.deleteAlbum(albumId);
     return { message: 'Album deleted successfully' };
   }
 }

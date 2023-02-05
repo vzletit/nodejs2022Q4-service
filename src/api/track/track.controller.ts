@@ -18,38 +18,38 @@ export class TrackController {
   constructor(private trackService: TrackService) {}
 
   @Get()
-  getTracks() {
-    return this.trackService.getTracks();
+  async getTracks() {
+    return await this.trackService.getTracks();
   }
 
   @Get('/:trackId')
-  getUser(@Param('trackId', ParseUUIDPipe) trackId: string) {
-    const track = this.trackService.getTrack(trackId);
-    handleNotFound(track);
+  async getUser(@Param('trackId', ParseUUIDPipe) trackId: string) {
+    const track = await this.trackService.getTrack(trackId);
+    await handleNotFound(track);
     return track;
   }
 
   @Post()
-  createTrack(@Body() createTrackDto: TrackDto) {
-    return this.trackService.createTrack(createTrackDto);
+  async createTrack(@Body() createTrackDto: TrackDto) {
+    return await this.trackService.createTrack(createTrackDto);
   }
 
   @Put('/:trackId')
-  updateTrack(
+  async updateTrack(
     @Body() updateTrackDto: TrackDto,
     @Param('trackId', ParseUUIDPipe) trackId: string,
   ) {
-    const track = this.trackService.getTrack(trackId);
-    handleNotFound(track);
+    const track = await this.trackService.getTrack(trackId);
+    await handleNotFound(track);
     return this.trackService.updateTrack(updateTrackDto, trackId);
   }
 
   @Delete('/:trackId')
   @HttpCode(204)
-  deleteTrack(@Param('trackId', ParseUUIDPipe) trackId: string) {
-    const track = this.trackService.getTrack(trackId);
-    handleNotFound(track);
-    this.trackService.deleteTrack(trackId);
+  async deleteTrack(@Param('trackId', ParseUUIDPipe) trackId: string) {
+    const track = await this.trackService.getTrack(trackId);
+    await handleNotFound(track);
+    await this.trackService.deleteTrack(trackId);
     return { message: 'Track deleted successfully' };
   }
 }

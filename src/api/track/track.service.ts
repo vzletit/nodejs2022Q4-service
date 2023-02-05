@@ -8,29 +8,29 @@ import { Utils } from 'src/utils/utils.service';
 export class TrackService {
   constructor(private dbService: DbService, private utils: Utils) {}
 
-  getTracks() {
-    return this.dbService.getMany('tracks');
+  async getTracks() {
+    return await this.dbService.getMany('tracks');
   }
 
-  getTrack(trackId: string) {
-    return this.dbService.getOne('tracks', trackId);
+  async getTrack(trackId: string) {
+    return await this.dbService.getOne('tracks', trackId);
   }
 
-  createTrack(createTrackDto: TrackDto) {
-    return this.dbService.addOne('tracks', {
+  async createTrack(createTrackDto: TrackDto) {
+    return await this.dbService.addOne('tracks', {
       ...createTrackDto,
       id: randomUUID(),
     });
   }
 
-  updateTrack(updateTrackDto: TrackDto, trackId: string) {
+  async updateTrack(updateTrackDto: TrackDto, trackId: string) {
     return this.dbService.updateOne('tracks', trackId, {
       ...updateTrackDto,
     });
   }
 
-  deleteTrack(trackId: string) {
-    this.dbService.deleteOne('favorites/tracks', trackId);
+  async deleteTrack(trackId: string) {
+    await this.dbService.deleteOne('favorites/tracks', trackId);
 
     this.utils.nullAnyMention('albums', {
       nameId: 'trackId',
@@ -42,6 +42,6 @@ export class TrackService {
       valueId: trackId,
     });
 
-    this.dbService.deleteOne('tracks', trackId);
+    await this.dbService.deleteOne('tracks', trackId);
   }
 }

@@ -6,30 +6,32 @@ import { DbService } from '../../utils/db.service';
 export class FavoritesService {
   constructor(private dbService: DbService) {}
 
-  getFavs() {
-    const allFavsObj = this.dbService.getMany('favorites');
+  async getFavs() {
+    const allFavsObj = await this.dbService.getMany('favorites');
 
     const getFavItems = (arr: Entity[], arrKeys: string[]) =>
       arr.filter((item: Entity) => arrKeys.includes(item.id));
 
-    return Object.keys(allFavsObj).reduce(
-      (acc, key) => ({
-        ...acc,
-        [key]: getFavItems(this.dbService.getMany(key), allFavsObj[key]),
+    const result = await Object.keys(allFavsObj).reduce(
+      async (acc, key) => ({
+        ...(await acc),
+        [key]: getFavItems(await this.dbService.getMany(key), allFavsObj[key]),
       }),
-      {},
+      Promise.resolve({}),
     );
+
+    return result;
   }
 
-  getFavsByType(type: string) {
-    return this.dbService.getMany(`favorites/${type}`);
+  async getFavsByType(type: string) {
+    return await this.dbService.getMany(`favorites/${type}`);
   }
 
-  addToFavs(type: string, entityId: string) {
-    return this.dbService.addOne(`favorites/${type}`, entityId);
+  async addToFavs(type: string, entityId: string) {
+    return await this.dbService.addOne(`favorites/${type}`, entityId);
   }
 
-  removeFromFavs(type: string, entityId: string) {
-    return this.dbService.deleteOne(`favorites/${type}`, entityId);
+  async removeFromFavs(type: string, entityId: string) {
+    return await this.dbService.deleteOne(`favorites/${type}`, entityId);
   }
 }

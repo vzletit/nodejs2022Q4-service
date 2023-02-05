@@ -6,8 +6,8 @@ import { DbService } from './db.service';
 export class Utils {
   constructor(private dbService: DbService) {}
 
-  nullAnyMention(type: string, { nameId, valueId }) {
-    const items = this.dbService.getMany(type);
+  async nullAnyMention(type: string, { nameId, valueId }) {
+    const items = await this.dbService.getMany(type);
     items.forEach((item: Entity) => {
       if (item[nameId] === valueId) {
         const updatedObj = { ...item, [nameId]: null };

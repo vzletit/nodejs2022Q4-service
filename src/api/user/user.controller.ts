@@ -19,41 +19,41 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Get()
-  getUsers() {
-    return this.userService.getUsers();
+  async getUsers() {
+    return await this.userService.getUsers();
   }
 
   @Get('/:userId')
-  getUser(@Param('userId', ParseUUIDPipe) userId: string) {
-    const user = this.userService.getUser(userId);
-    handleNotFound(user);
+  async getUser(@Param('userId', ParseUUIDPipe) userId: string) {
+    const user = await this.userService.getUser(userId);
+    await handleNotFound(user);
     return user;
   }
 
   @Post()
-  createUser(@Body() createUserDto: UserDto) {
-    return this.userService.createUser(createUserDto);
+  async createUser(@Body() createUserDto: UserDto) {
+    return await this.userService.createUser(createUserDto);
   }
 
   @Put('/:userId')
-  updatePassword(
+  async updatePassword(
     @Body() updatePasswordDto: UpdatePasswordDto,
     @Param('userId', ParseUUIDPipe) userId: string,
   ) {
-    const user = this.userService.getUser(userId);
+    const user = await this.userService.getUser(userId);
 
-    handleNotFound(user);
-    handleWrongPassword(user.password, updatePasswordDto.oldPassword);
+    await handleNotFound(user);
+    await handleWrongPassword(user.password, updatePasswordDto.oldPassword);
 
-    return this.userService.updatePassword(updatePasswordDto, userId);
+    return await this.userService.updatePassword(updatePasswordDto, userId);
   }
 
   @Delete('/:userId')
   @HttpCode(204)
-  deleteUser(@Param('userId', ParseUUIDPipe) userId: string) {
-    const user = this.userService.getUser(userId);
-    handleNotFound(user);
-    this.userService.deleteUser(userId);
+  async deleteUser(@Param('userId', ParseUUIDPipe) userId: string) {
+    const user = await this.userService.getUser(userId);
+    await handleNotFound(user);
+    await this.userService.deleteUser(userId);
     return { message: 'User deleted successfully' };
   }
 }

@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsOptional } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class UserDto {
   @IsString()
@@ -6,16 +6,4 @@ export class UserDto {
 
   @IsString()
   password: string;
-
-  // @IsOptional()
-  // @IsNumber()
-  // version: number; // integer number, increments on update
-
-  // @IsOptional()
-  // @IsNumber()
-  // createdAt: number; // timestamp of creation
-
-  // @IsOptional()
-  // @IsNumber()
-  // updatedAt: number; // timestamp of last update
 }

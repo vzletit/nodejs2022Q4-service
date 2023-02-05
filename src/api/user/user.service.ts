@@ -8,16 +8,16 @@ import { DbService } from 'src/utils/db.service';
 export class UserService {
   constructor(private dbService: DbService) {}
 
-  getUsers() {
-    const users = this.dbService.getMany('users');
+  async getUsers() {
+    const users = await this.dbService.getMany('users');
     return users.map((user) => ({ id: user.id, login: user.login }));
   }
 
-  getUser(userId: string) {
-    return this.dbService.getOne('users', userId);
+  async getUser(userId: string) {
+    return await this.dbService.getOne('users', userId);
   }
 
-  createUser(createUserDto: UserDto) {
+  async createUser(createUserDto: UserDto) {
     const newUserObj = {
       ...createUserDto,
       id: randomUUID(),
@@ -26,15 +26,15 @@ export class UserService {
       updatedAt: Date.now(),
     };
 
-    this.dbService.addOne('users', newUserObj);
+    await this.dbService.addOne('users', newUserObj);
 
     const returnUserObj = { ...newUserObj };
     delete returnUserObj.password;
     return returnUserObj;
   }
 
-  updatePassword(updatePassword: UpdatePasswordDto, userId: string) {
-    const { version } = this.dbService.getOne('users', userId);
+  async updatePassword(updatePassword: UpdatePasswordDto, userId: string) {
+    const { version } = await this.dbService.getOne('users', userId);
     const { newPassword } = updatePassword;
     this.dbService.updateOne('users', userId, {
       updatedAt: Date.now(),
@@ -42,14 +42,14 @@ export class UserService {
       password: newPassword,
     });
 
-    const updatedUser = this.dbService.getOne('users', userId);
+    const updatedUser = await this.dbService.getOne('users', userId);
 
     const returnUserObj = { ...updatedUser };
     delete returnUserObj.password;
     return returnUserObj;
   }
 
-  deleteUser(userId: string) {
-    this.dbService.deleteOne('users', userId);
+  async deleteUser(userId: string) {
+    await this.dbService.deleteOne('users', userId);
   }
 }

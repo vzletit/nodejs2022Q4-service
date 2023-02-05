@@ -23,25 +23,25 @@ export class DbService {
     return this.db[path];
   }
 
-  getAll() {
+  async getAll() {
     return this.db;
   }
 
-  getMany(entityName: string) {
+  async getMany(entityName: string) {
     return this.pathByEntity(entityName);
   }
-  getOne(entityName: string, itemId: string) {
+  async getOne(entityName: string, itemId: string) {
     const targetDbArray = this.pathByEntity(entityName);
     return targetDbArray.find((item: Entity) => item.id === itemId);
   }
 
-  addOne<T>(entityName: string, itemBody: T) {
+  async addOne<T>(entityName: string, itemBody: T) {
     const targetArr = this.pathByEntity(entityName);
     targetArr.push(itemBody);
     return itemBody;
   }
 
-  updateOne<T>(entityName: string, itemId: string, updatedItemBody: T): T {
+  async updateOne<T>(entityName: string, itemId: string, updatedItemBody: T) {
     const targetDbArray = this.pathByEntity(entityName);
     const item = targetDbArray.find((item: Entity) => item.id === itemId);
     const itemIndex = targetDbArray.indexOf(item);
@@ -50,7 +50,7 @@ export class DbService {
     return updatedItem;
   }
 
-  deleteOne(entityName: string, itemId: string) {
+  async deleteOne(entityName: string, itemId: string) {
     const targetDbArray = this.pathByEntity(entityName);
 
     const item = targetDbArray.find((item: Entity | string) =>

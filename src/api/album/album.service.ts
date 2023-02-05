@@ -8,29 +8,29 @@ import { randomUUID } from 'crypto';
 export class AlbumService {
   constructor(private dbService: DbService, private utils: Utils) {}
 
-  getAlbums() {
-    return this.dbService.getMany('albums');
+  async getAlbums() {
+    return await this.dbService.getMany('albums');
   }
 
-  getAlbum(albumId: string) {
-    return this.dbService.getOne('albums', albumId);
+  async getAlbum(albumId: string) {
+    return await this.dbService.getOne('albums', albumId);
   }
 
-  createAlbum(createAlbumDto: AlbumDto) {
-    return this.dbService.addOne('albums', {
+  async createAlbum(createAlbumDto: AlbumDto) {
+    return await this.dbService.addOne('albums', {
       ...createAlbumDto,
       id: randomUUID(),
     });
   }
 
-  updateAlbum(updateAlbumDto: AlbumDto, albumId: string) {
-    return this.dbService.updateOne('albums', albumId, {
+  async updateAlbum(updateAlbumDto: AlbumDto, albumId: string) {
+    return await this.dbService.updateOne('albums', albumId, {
       ...updateAlbumDto,
     });
   }
 
-  deleteAlbum(albumId: string) {
-    this.dbService.deleteOne('favorites/albums', albumId);
+  async deleteAlbum(albumId: string) {
+    await this.dbService.deleteOne('favorites/albums', albumId);
 
     this.utils.nullAnyMention('tracks', {
       nameId: 'albumId',
@@ -42,6 +42,6 @@ export class AlbumService {
       valueId: albumId,
     });
 
-    this.dbService.deleteOne('albums', albumId);
+    await this.dbService.deleteOne('albums', albumId);
   }
 }

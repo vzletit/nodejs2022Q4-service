@@ -16,64 +16,66 @@ export class FavoritesController {
   ) {}
 
   @Get()
-  getFavs() {
-    return this.favoritesService.getFavs();
+  async getFavs() {
+    return await this.favoritesService.getFavs();
   }
 
   @Post('/track/:trackId')
-  addTrackToFavs(@Param('trackId', ParseUUIDPipe) trackId: string) {
-    const track = this.trackService.getTrack(trackId);
-    handleUnprocessable(track);
+  async addTrackToFavs(@Param('trackId', ParseUUIDPipe) trackId: string) {
+    const track = await this.trackService.getTrack(trackId);
+    await handleUnprocessable(track);
 
-    this.favoritesService.addToFavs('tracks', trackId);
+    await this.favoritesService.addToFavs('tracks', trackId);
     return { message: 'Successfully added to favorites' };
   }
 
   @Delete('/track/:trackId')
   @HttpCode(204)
-  removeTrackFromFavs(@Param('trackId', ParseUUIDPipe) trackId: string) {
-    const track = this.trackService.getTrack(trackId);
-    handleUnprocessable(track);
+  async removeTrackFromFavs(@Param('trackId', ParseUUIDPipe) trackId: string) {
+    const track = await this.trackService.getTrack(trackId);
+    await handleUnprocessable(track);
 
-    this.favoritesService.removeFromFavs('tracks', trackId);
+    await this.favoritesService.removeFromFavs('tracks', trackId);
     return { message: 'Successfully removed from favorites' };
   }
 
   @Post('/album/:albumId')
-  addAlbumToFavs(@Param('albumId', ParseUUIDPipe) albumId: string) {
-    const album = this.albumService.getAlbum(albumId);
-    handleUnprocessable(album);
+  async addAlbumToFavs(@Param('albumId', ParseUUIDPipe) albumId: string) {
+    const album = await this.albumService.getAlbum(albumId);
+    await handleUnprocessable(album);
 
-    this.favoritesService.addToFavs('albums', albumId);
+    await this.favoritesService.addToFavs('albums', albumId);
     return { message: 'Successfully added to favorites' };
   }
 
   @Delete('/album/:albumId')
   @HttpCode(204)
-  removeAlbumFromFavs(@Param('albumId', ParseUUIDPipe) albumId: string) {
-    const album = this.albumService.getAlbum(albumId);
-    handleUnprocessable(album);
+  async removeAlbumFromFavs(@Param('albumId', ParseUUIDPipe) albumId: string) {
+    const album = await this.albumService.getAlbum(albumId);
+    await handleUnprocessable(album);
 
-    this.favoritesService.removeFromFavs('albums', albumId);
+    await this.favoritesService.removeFromFavs('albums', albumId);
     return { message: 'Successfully removed from favorites' };
   }
 
   @Post('/artist/:artistId')
-  addArtistToFavs(@Param('artistId', ParseUUIDPipe) artistId: string) {
-    const artist = this.artistService.getArtist(artistId);
-    handleUnprocessable(artist);
+  async addArtistToFavs(@Param('artistId', ParseUUIDPipe) artistId: string) {
+    const artist = await this.artistService.getArtist(artistId);
+    await handleUnprocessable(artist);
 
-    this.favoritesService.addToFavs('artists', artistId);
+    await this.favoritesService.addToFavs('artists', artistId);
     return { message: 'Successfully added to favorites' };
   }
 
   @Delete('/artist/:artistId')
   @HttpCode(204)
-  removeArtistFromFavs(@Param('artistId', ParseUUIDPipe) artistId: string) {
-    const artist = this.artistService.getArtist(artistId);
-    handleUnprocessable(artist);
+  async removeArtistFromFavs(
+    @Param('artistId', ParseUUIDPipe) artistId: string,
+  ) {
+    const artist = await this.artistService.getArtist(artistId);
+    await handleUnprocessable(artist);
 
-    this.favoritesService.removeFromFavs('artists', artistId);
+    await this.favoritesService.removeFromFavs('artists', artistId);
     return { message: 'Successfully removed from favorites' };
   }
 }
