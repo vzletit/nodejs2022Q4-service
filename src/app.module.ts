@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { DbService } from './utils/db.service';
 
 import { UserController } from './user/user.controller';
@@ -18,7 +16,6 @@ import { Utils } from './utils/utils.service';
 @Module({
   imports: [],
   controllers: [
-    AppController,
     UserController,
     ArtistController,
     TrackController,
@@ -26,7 +23,6 @@ import { Utils } from './utils/utils.service';
     FavoritesController,
   ],
   providers: [
-    AppService,
     UserService,
     DbService,
     ArtistService,

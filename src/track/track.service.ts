@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TrackDto } from './dto/track-dto';
+import { TrackDto } from './dto/track.dto';
 import { DbService } from '../utils/db.service';
 import { Utils } from 'src/utils/utils.service';
 

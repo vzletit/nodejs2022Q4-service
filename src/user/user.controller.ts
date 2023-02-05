@@ -9,8 +9,8 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserDto } from './dto/user-dto';
-import { UpdatePasswordDto } from './dto/update-password-dto';
+import { UserDto } from './dto/user.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 import {
   ParseUUIDPipe,
   NotFoundException,

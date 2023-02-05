@@ -1,10 +1,6 @@
 import { IsString, IsNumber, IsOptional } from 'class-validator';
 
 export class AlbumDto {
-  @IsOptional()
-  @IsString()
-  id: string; // uuid v4
-
   @IsString()
   name: string;
 
@@ -13,5 +9,5 @@ export class AlbumDto {
 
   @IsOptional()
   @IsString()
-  artistId: string;
+  artistId?: string;
 }

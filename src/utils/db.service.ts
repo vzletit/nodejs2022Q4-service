@@ -36,9 +36,9 @@ export class DbService {
     return targetDbArray.find((item: Entity) => item.id === itemId);
   }
 
-  addOne<T>(entityName: string, itemBody: T): T {
+  addOne<T>(entityName: string, itemBody: T): any {
     const targetArr = this.pathByEntity(entityName);
-    let result: T = itemBody;
+    let result = itemBody;
 
     if (typeof itemBody === 'object') {
       result = { ...itemBody, id: randomUUID() };

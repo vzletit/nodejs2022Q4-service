@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ArtistDto } from './dto/artist-dto';
+import { ArtistDto } from './dto/artist.dto';
 import { DbService } from '../utils/db.service';
 import { Utils } from 'src/utils/utils.service';
 

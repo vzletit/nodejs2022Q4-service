@@ -1,7 +1,7 @@
-import { TrackDto } from 'src/track/dto/track-dto';
-import { AlbumDto } from 'src/album/dto/album-dto';
-import { ArtistDto } from 'src/artist/dto/artist-dto';
-import { UserDto } from 'src/user/dto/user-dto';
+import { TrackDto } from 'src/track/dto/track.dto';
+import { AlbumDto } from 'src/album/dto/album.dto';
+import { ArtistDto } from 'src/artist/dto/artist.dto';
+import { UserDto } from 'src/user/dto/user.dto';
 
 type Id = string;
 
@@ -23,4 +23,10 @@ interface Db {
   };
 }
 
-type Entity = UserDto | AlbumDto | ArtistDto | TrackDto;
+interface UserDTOWithId extends UserDTO {
+  id: Id;
+}
+
+interface Entity extends UserDTOWithId, AlbumDto, ArtistDto, TrackDto {
+  id: Id;
+}

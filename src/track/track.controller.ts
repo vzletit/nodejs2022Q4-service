@@ -9,7 +9,7 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { TrackService } from './track.service';
-import { TrackDto } from './dto/track-dto';
+import { TrackDto } from './dto/track.dto';
 import { ParseUUIDPipe, NotFoundException } from '@nestjs/common';
 
 @Controller('/track')

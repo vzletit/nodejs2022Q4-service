@@ -9,7 +9,7 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { ArtistService } from './artist.service';
-import { ArtistDto } from './dto/artist-dto';
+import { ArtistDto } from './dto/artist.dto';
 import { ParseUUIDPipe, NotFoundException } from '@nestjs/common';
 
 @Controller('/artist')

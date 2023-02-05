@@ -9,7 +9,7 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
-import { AlbumDto } from './dto/album-dto';
+import { AlbumDto } from './dto/album.dto';
 import { ParseUUIDPipe, NotFoundException } from '@nestjs/common';
 
 @Controller('album')
