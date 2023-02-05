@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { randomUUID } from 'crypto';
-import { Entity, Db } from 'src/Interfaces/interfaces';
+import { Db, Entity } from 'src/Interfaces/interfaces';
 
 @Injectable()
 export class DbService {
@@ -36,16 +35,10 @@ export class DbService {
     return targetDbArray.find((item: Entity) => item.id === itemId);
   }
 
-  addOne<T>(entityName: string, itemBody: T): any {
+  addOne<T>(entityName: string, itemBody: T) {
     const targetArr = this.pathByEntity(entityName);
-    let result = itemBody;
-
-    if (typeof itemBody === 'object') {
-      result = { ...itemBody, id: randomUUID() };
-    }
-
-    targetArr.push(result);
-    return result;
+    targetArr.push(itemBody);
+    return itemBody;
   }
 
   updateOne<T>(entityName: string, itemId: string, updatedItemBody: T): T {

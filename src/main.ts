@@ -15,7 +15,7 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Library service')    
+    .setTitle('Library service')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);

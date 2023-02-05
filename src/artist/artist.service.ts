@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ArtistDto } from './dto/artist.dto';
 import { DbService } from '../utils/db.service';
 import { Utils } from 'src/utils/utils.service';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class ArtistService {
@@ -16,7 +17,10 @@ export class ArtistService {
   }
 
   createArtist(createArtistDto: ArtistDto) {
-    return this.dbService.addOne('artists', createArtistDto);
+    return this.dbService.addOne('artists', {
+      ...createArtistDto,
+      id: randomUUID(),
+    });
   }
 
   updateArtist(updateArtistDto: ArtistDto, artistId: string) {

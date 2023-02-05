@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import { TrackDto } from './dto/track.dto';
 import { DbService } from '../utils/db.service';
 import { Utils } from 'src/utils/utils.service';
@@ -16,7 +17,10 @@ export class TrackService {
   }
 
   createTrack(createTrackDto: TrackDto) {
-    return this.dbService.addOne('tracks', createTrackDto);
+    return this.dbService.addOne('tracks', {
+      ...createTrackDto,
+      id: randomUUID(),
+    });
   }
 
   updateTrack(updateTrackDto: TrackDto, trackId: string) {

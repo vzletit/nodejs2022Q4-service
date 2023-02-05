@@ -23,10 +23,6 @@ interface Db {
   };
 }
 
-interface UserDTOWithId extends UserDTO {
-  id: Id;
-}
-
-interface Entity extends UserDTOWithId, AlbumDto, ArtistDto, TrackDto {
+interface Entity extends UserDTO, AlbumDto, ArtistDto, TrackDto {
   id: Id;
 }
