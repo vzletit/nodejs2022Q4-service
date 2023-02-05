@@ -10,7 +10,8 @@ import {
 } from '@nestjs/common';
 import { TrackService } from './track.service';
 import { TrackDto } from './dto/track.dto';
-import { ParseUUIDPipe, NotFoundException } from '@nestjs/common';
+import { ParseUUIDPipe } from '@nestjs/common';
+import { handleNotFound } from 'src/utils/errorHandlers';
 
 @Controller('/track')
 export class TrackController {
@@ -24,9 +25,7 @@ export class TrackController {
   @Get('/:trackId')
   getUser(@Param('trackId', ParseUUIDPipe) trackId: string) {
     const track = this.trackService.getTrack(trackId);
-    if (!track) {
-      throw new NotFoundException(`Track ID ${trackId} not found`);
-    }
+    handleNotFound(track);
     return track;
   }
 
@@ -41,9 +40,7 @@ export class TrackController {
     @Param('trackId', ParseUUIDPipe) trackId: string,
   ) {
     const track = this.trackService.getTrack(trackId);
-    if (!track) {
-      throw new NotFoundException(`Track ID ${trackId} not found`);
-    }
+    handleNotFound(track);
     return this.trackService.updateTrack(updateTrackDto, trackId);
   }
 
@@ -51,10 +48,7 @@ export class TrackController {
   @HttpCode(204)
   deleteTrack(@Param('trackId', ParseUUIDPipe) trackId: string) {
     const track = this.trackService.getTrack(trackId);
-    if (!track) {
-      throw new NotFoundException(`Track ID ${trackId} not found`);
-    }
-
+    handleNotFound(track);
     this.trackService.deleteTrack(trackId);
     return { message: 'Track deleted successfully' };
   }

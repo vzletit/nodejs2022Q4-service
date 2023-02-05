@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { TrackDto } from './dto/track.dto';
-import { DbService } from '../utils/db.service';
+import { DbService } from '../../utils/db.service';
 import { Utils } from 'src/utils/utils.service';
 
 @Injectable()

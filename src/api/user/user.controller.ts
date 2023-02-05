@@ -11,12 +11,8 @@ import {
 import { UserService } from './user.service';
 import { UserDto } from './dto/user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import {
-  ParseUUIDPipe,
-  NotFoundException,
-  BadRequestException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { ParseUUIDPipe } from '@nestjs/common';
+import { handleNotFound, handleWrongPassword } from 'src/utils/errorHandlers';
 
 @Controller('user')
 export class UserController {
@@ -30,9 +26,7 @@ export class UserController {
   @Get('/:userId')
   getUser(@Param('userId', ParseUUIDPipe) userId: string) {
     const user = this.userService.getUser(userId);
-    if (!user) {
-      throw new NotFoundException(`User ID ${userId} not found`);
-    }
+    handleNotFound(user);
     return user;
   }
 
@@ -47,13 +41,9 @@ export class UserController {
     @Param('userId', ParseUUIDPipe) userId: string,
   ) {
     const user = this.userService.getUser(userId);
-    if (!user) {
-      throw new NotFoundException(`User ID ${userId} not found`);
-    }
 
-    if (user.password !== updatePasswordDto.oldPassword) {
-      throw new ForbiddenException('Current password is incorrect');
-    }
+    handleNotFound(user);
+    handleWrongPassword(user.password, updatePasswordDto.oldPassword);
 
     return this.userService.updatePassword(updatePasswordDto, userId);
   }
@@ -62,10 +52,7 @@ export class UserController {
   @HttpCode(204)
   deleteUser(@Param('userId', ParseUUIDPipe) userId: string) {
     const user = this.userService.getUser(userId);
-    if (!user) {
-      throw new NotFoundException(`User ID ${userId} not found`);
-    }
-
+    handleNotFound(user);
     this.userService.deleteUser(userId);
     return { message: 'User deleted successfully' };
   }

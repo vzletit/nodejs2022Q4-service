@@ -10,7 +10,8 @@ import {
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
 import { AlbumDto } from './dto/album.dto';
-import { ParseUUIDPipe, NotFoundException } from '@nestjs/common';
+import { ParseUUIDPipe } from '@nestjs/common';
+import { handleNotFound } from 'src/utils/errorHandlers';
 
 @Controller('album')
 export class AlbumController {
@@ -22,11 +23,9 @@ export class AlbumController {
   }
 
   @Get('/:albumId')
-  getUser(@Param('albumId', ParseUUIDPipe) albumId: string) {
+  getAlbum(@Param('albumId', ParseUUIDPipe) albumId: string) {
     const album = this.albumService.getAlbum(albumId);
-    if (!album) {
-      throw new NotFoundException(`Album ID ${albumId} not found`);
-    }
+    handleNotFound(album);
     return album;
   }
 
@@ -41,9 +40,7 @@ export class AlbumController {
     @Param('albumId', ParseUUIDPipe) albumId: string,
   ) {
     const album = this.albumService.getAlbum(albumId);
-    if (!album) {
-      throw new NotFoundException(`Album ID ${albumId} not found`);
-    }
+    handleNotFound(album);
     return this.albumService.updateAlbum(updateAlbumDto, albumId);
   }
 
@@ -51,10 +48,7 @@ export class AlbumController {
   @HttpCode(204)
   deleteAlbum(@Param('albumId', ParseUUIDPipe) albumId: string) {
     const album = this.albumService.getAlbum(albumId);
-    if (!album) {
-      throw new NotFoundException(`Album ID ${albumId} not found`);
-    }
-
+    handleNotFound(album);
     this.albumService.deleteAlbum(albumId);
     return { message: 'Album deleted successfully' };
   }
