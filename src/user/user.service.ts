@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user-dto';
+import { UserDto } from './dto/user-dto';
 import { UpdatePasswordDto } from './dto/update-password-dto';
 import { DbService } from 'src/utils/db.service';
 
@@ -16,7 +16,7 @@ export class UserService {
     return this.dbService.getOne('users', userId);
   }
 
-  createUser(createUserDto: CreateUserDto) {
+  createUser(createUserDto: UserDto) {
     const { id } = this.dbService.addOne('users', createUserDto);
     this.dbService.updateOne('users', id, {
       version: 1,

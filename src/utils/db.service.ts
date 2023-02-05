@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
+import { Entity, Db } from 'src/Interfaces/interfaces';
 
 @Injectable()
 export class DbService {
-  private db = {
+  private db: Db = {
     users: [],
     artists: [],
     albums: [],
@@ -32,19 +33,24 @@ export class DbService {
   }
   getOne(entityName: string, itemId: string) {
     const targetDbArray = this.pathByEntity(entityName);
-    return targetDbArray.find((item) => item.id === itemId);
+    return targetDbArray.find((item: Entity) => item.id === itemId);
   }
 
-  addOne(entityName: string, itemBody) {
-    if (typeof itemBody === 'object') itemBody.id = randomUUID();
-    const target = this.pathByEntity(entityName);
-    target.push(itemBody);
-    return itemBody;
+  addOne<T>(entityName: string, itemBody: T): T {
+    const targetArr = this.pathByEntity(entityName);
+    let result: T = itemBody;
+
+    if (typeof itemBody === 'object') {
+      result = { ...itemBody, id: randomUUID() };
+    }
+
+    targetArr.push(result);
+    return result;
   }
 
-  updateOne(entityName: string, itemId: string, updatedItemBody) {
+  updateOne<T>(entityName: string, itemId: string, updatedItemBody: T): T {
     const targetDbArray = this.pathByEntity(entityName);
-    const item = targetDbArray.find((item) => item.id === itemId);
+    const item = targetDbArray.find((item: Entity) => item.id === itemId);
     const itemIndex = targetDbArray.indexOf(item);
     const updatedItem = { ...item, ...updatedItemBody };
     targetDbArray[itemIndex] = updatedItem;
@@ -54,8 +60,8 @@ export class DbService {
   deleteOne(entityName: string, itemId: string) {
     const targetDbArray = this.pathByEntity(entityName);
 
-    const item = targetDbArray.find(
-      (item) => item === itemId || item?.id === itemId, // targetDbArray can be string[] or object[]
+    const item = targetDbArray.find((item: Entity | string) =>
+      typeof item === 'object' ? item.id === itemId : item === itemId,
     );
 
     if (item) {

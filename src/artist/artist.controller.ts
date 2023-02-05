@@ -9,8 +9,7 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { ArtistService } from './artist.service';
-import { CreateArtistDto } from './dto/create-artist-dto';
-import { UpdateArtistDto } from './dto/update-artist-dto';
+import { ArtistDto } from './dto/artist-dto';
 import { ParseUUIDPipe, NotFoundException } from '@nestjs/common';
 
 @Controller('/artist')
@@ -32,13 +31,13 @@ export class ArtistController {
   }
 
   @Post()
-  createArtist(@Body() createArtistDto: CreateArtistDto) {
+  createArtist(@Body() createArtistDto: ArtistDto) {
     return this.artistService.createArtist(createArtistDto);
   }
 
   @Put('/:artistId')
   updateArtist(
-    @Body() updateArtistDto: UpdateArtistDto,
+    @Body() updateArtistDto: ArtistDto,
     @Param('artistId', ParseUUIDPipe) artistId: string,
   ) {
     const artist = this.artistService.getArtist(artistId);

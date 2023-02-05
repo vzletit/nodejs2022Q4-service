@@ -1,10 +1,13 @@
 import { IsString, IsBoolean, IsOptional } from 'class-validator';
 
-export class CreateArtistDto {
+export class ArtistDto {
   @IsOptional()
   @IsString()
+  id: string; // uuid v4
+
+  @IsString()
   name: string;
-  @IsOptional()
+
   @IsBoolean()
   grammy: boolean;
 }

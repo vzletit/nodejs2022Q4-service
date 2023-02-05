@@ -9,8 +9,7 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
-import { CreateAlbumDto } from './dto/create-album-dto';
-import { UpdateAlbumDto } from './dto/update-album-dto';
+import { AlbumDto } from './dto/album-dto';
 import { ParseUUIDPipe, NotFoundException } from '@nestjs/common';
 
 @Controller('album')
@@ -32,13 +31,13 @@ export class AlbumController {
   }
 
   @Post()
-  createAlbum(@Body() createAlbumDto: CreateAlbumDto) {
+  createAlbum(@Body() createAlbumDto: AlbumDto) {
     return this.albumService.createAlbum(createAlbumDto);
   }
 
   @Put('/:albumId')
   updateAlbum(
-    @Body() updateAlbumDto: UpdateAlbumDto,
+    @Body() updateAlbumDto: AlbumDto,
     @Param('albumId', ParseUUIDPipe) albumId: string,
   ) {
     const album = this.albumService.getAlbum(albumId);

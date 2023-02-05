@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTrackDto } from './dto/create-track-dto';
-import { UpdateTrackDto } from './dto/update-track-dto';
+import { TrackDto } from './dto/track-dto';
 import { DbService } from '../utils/db.service';
 import { Utils } from 'src/utils/utils.service';
 
@@ -16,11 +15,11 @@ export class TrackService {
     return this.dbService.getOne('tracks', trackId);
   }
 
-  createTrack(createTrackDto: CreateTrackDto) {
+  createTrack(createTrackDto: TrackDto) {
     return this.dbService.addOne('tracks', createTrackDto);
   }
 
-  updateTrack(updateTrackDto: UpdateTrackDto, trackId: string) {
+  updateTrack(updateTrackDto: TrackDto, trackId: string) {
     return this.dbService.updateOne('tracks', trackId, {
       ...updateTrackDto,
     });

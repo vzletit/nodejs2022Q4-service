@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateArtistDto } from './dto/create-artist-dto';
-import { UpdateArtistDto } from './dto/update-artist-dto';
+import { ArtistDto } from './dto/artist-dto';
 import { DbService } from '../utils/db.service';
 import { Utils } from 'src/utils/utils.service';
 
@@ -16,11 +15,11 @@ export class ArtistService {
     return this.dbService.getOne('artists', artistId);
   }
 
-  createArtist(createArtistDto: CreateArtistDto) {
+  createArtist(createArtistDto: ArtistDto) {
     return this.dbService.addOne('artists', createArtistDto);
   }
 
-  updateArtist(updateArtistDto: UpdateArtistDto, artistId: string) {
+  updateArtist(updateArtistDto: ArtistDto, artistId: string) {
     return this.dbService.updateOne('artists', artistId, {
       ...updateArtistDto,
     });

@@ -7,6 +7,6 @@ export class AppController {
 
   @Get()
   getAll() {
-    return this.appService.getAll();
+    return 'Welcome to the library';
   }
 }

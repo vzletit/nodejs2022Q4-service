@@ -9,8 +9,7 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { TrackService } from './track.service';
-import { CreateTrackDto } from './dto/create-track-dto';
-import { UpdateTrackDto } from './dto/update-track-dto';
+import { TrackDto } from './dto/track-dto';
 import { ParseUUIDPipe, NotFoundException } from '@nestjs/common';
 
 @Controller('/track')
@@ -32,13 +31,13 @@ export class TrackController {
   }
 
   @Post()
-  createTrack(@Body() createTrackDto: CreateTrackDto) {
+  createTrack(@Body() createTrackDto: TrackDto) {
     return this.trackService.createTrack(createTrackDto);
   }
 
   @Put('/:trackId')
   updateTrack(
-    @Body() updateTrackDto: UpdateTrackDto,
+    @Body() updateTrackDto: TrackDto,
     @Param('trackId', ParseUUIDPipe) trackId: string,
   ) {
     const track = this.trackService.getTrack(trackId);

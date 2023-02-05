@@ -9,7 +9,7 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user-dto';
+import { UserDto } from './dto/user-dto';
 import { UpdatePasswordDto } from './dto/update-password-dto';
 import {
   ParseUUIDPipe,
@@ -37,7 +37,7 @@ export class UserController {
   }
 
   @Post()
-  createUser(@Body() createUserDto: CreateUserDto) {
+  createUser(@Body() createUserDto: UserDto) {
     return this.userService.createUser(createUserDto);
   }
 

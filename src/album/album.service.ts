@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAlbumDto } from './dto/create-album-dto';
-import { UpdateAlbumDto } from './dto/update-album-dto';
+import { AlbumDto } from './dto/album-dto';
 import { DbService } from '../utils/db.service';
 import { Utils } from 'src/utils/utils.service';
 
@@ -16,11 +15,11 @@ export class AlbumService {
     return this.dbService.getOne('albums', albumId);
   }
 
-  createAlbum(createAlbumDto: CreateAlbumDto) {
+  createAlbum(createAlbumDto: AlbumDto) {
     return this.dbService.addOne('albums', createAlbumDto);
   }
 
-  updateAlbum(updateAlbumDto: UpdateAlbumDto, albumId: string) {
+  updateAlbum(updateAlbumDto: AlbumDto, albumId: string) {
     return this.dbService.updateOne('albums', albumId, {
       ...updateAlbumDto,
     });
