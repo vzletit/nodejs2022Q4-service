@@ -20,7 +20,7 @@ cd nodejs2022Q4-service
 Switch to **dev** branch:
 
 ```bash
-got checkout dev
+git checkout dev
 ```
 
 Install NPM modules
