@@ -23,12 +23,13 @@ Switch to **dev** branch:
 git checkout dev
 ```
 
-Install NPM modules
+Install NPM modules with **--force** argument (due to @nestjs/swagger/plugin). There will be some vulnerabilities reported, even critical. Disregard them. We are brave guys. :-)
 
 ```
-npm install
+npm install --force
 ```
-Rename *example.env* to *.env*
+
+Rename *.env.example* to *.env*
 
 
 ## Running application
