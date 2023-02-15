@@ -1,3 +1,4 @@
+import { PrismaService } from 'src/prisma/prisma.service';
 import {
   Controller,
   Get,
@@ -8,30 +9,31 @@ import {
   Put,
   HttpCode,
 } from '@nestjs/common';
-import { ArtistService } from './artist.service';
 import { ArtistDto } from './dto/artist.dto';
 import { ParseUUIDPipe } from '@nestjs/common';
 import { handleNotFound } from 'src/utils/errorHandlers';
 
 @Controller('/artist')
 export class ArtistController {
-  constructor(private artistService: ArtistService) {}
+  constructor(private prisma: PrismaService) {}
 
   @Get()
   async getArtists() {
-    return this.artistService.getArtists();
+    return await this.prisma.artists.findMany();
   }
 
   @Get('/:artistId')
-  async getUser(@Param('artistId', ParseUUIDPipe) artistId: string) {
-    const artist = await this.artistService.getArtist(artistId);
-    await handleNotFound(artist);
+  async getArtist(@Param('artistId', ParseUUIDPipe) artistId: string) {
+    const artist = await this.prisma.artists.findUnique({
+      where: { id: artistId },
+    });
+    handleNotFound(artist);
     return artist;
   }
 
   @Post()
   async createArtist(@Body() createArtistDto: ArtistDto) {
-    return await this.artistService.createArtist(createArtistDto);
+    return await this.prisma.artists.create({ data: createArtistDto });
   }
 
   @Put('/:artistId')
@@ -39,17 +41,31 @@ export class ArtistController {
     @Body() updateArtistDto: ArtistDto,
     @Param('artistId', ParseUUIDPipe) artistId: string,
   ) {
-    const artist = await this.artistService.getArtist(artistId);
-    await handleNotFound(artist);
-    return await this.artistService.updateArtist(updateArtistDto, artistId);
+    const artist = await this.prisma.artists.findUnique({
+      where: { id: artistId },
+    });
+
+    handleNotFound(artist);
+
+    return await this.prisma.artists.update({
+      where: {
+        id: artistId,
+      },
+      data: {
+        ...updateArtistDto,
+      },
+    });
   }
 
   @Delete('/:artistId')
   @HttpCode(204)
   async deleteArtist(@Param('artistId', ParseUUIDPipe) artistId: string) {
-    const artist = await this.artistService.getArtist(artistId);
-    await handleNotFound(artist);
-    await this.artistService.deleteArtist(artistId);
+    const artist = await this.prisma.artists.findUnique({
+      where: { id: artistId },
+    });
+
+    handleNotFound(artist);
+    await this.prisma.artists.delete({ where: { id: artistId } });
     return { message: 'Artist deleted successfully' };
   }
 }

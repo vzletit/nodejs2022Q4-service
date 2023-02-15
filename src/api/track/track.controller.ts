@@ -1,3 +1,4 @@
+import { PrismaService } from 'src/prisma/prisma.service';
 import {
   Controller,
   Get,
@@ -8,30 +9,31 @@ import {
   Put,
   HttpCode,
 } from '@nestjs/common';
-import { TrackService } from './track.service';
 import { TrackDto } from './dto/track.dto';
 import { ParseUUIDPipe } from '@nestjs/common';
 import { handleNotFound } from 'src/utils/errorHandlers';
 
 @Controller('/track')
 export class TrackController {
-  constructor(private trackService: TrackService) {}
+  constructor(private prisma: PrismaService) {}
 
   @Get()
   async getTracks() {
-    return await this.trackService.getTracks();
+    return await this.prisma.tracks.findMany();
   }
 
   @Get('/:trackId')
-  async getUser(@Param('trackId', ParseUUIDPipe) trackId: string) {
-    const track = await this.trackService.getTrack(trackId);
-    await handleNotFound(track);
+  async getTrack(@Param('trackId', ParseUUIDPipe) trackId: string) {
+    const track = await this.prisma.tracks.findUnique({
+      where: { id: trackId },
+    });
+    handleNotFound(track);
     return track;
   }
 
   @Post()
   async createTrack(@Body() createTrackDto: TrackDto) {
-    return await this.trackService.createTrack(createTrackDto);
+    return await this.prisma.tracks.create({ data: createTrackDto });
   }
 
   @Put('/:trackId')
@@ -39,17 +41,31 @@ export class TrackController {
     @Body() updateTrackDto: TrackDto,
     @Param('trackId', ParseUUIDPipe) trackId: string,
   ) {
-    const track = await this.trackService.getTrack(trackId);
-    await handleNotFound(track);
-    return this.trackService.updateTrack(updateTrackDto, trackId);
+    const track = await this.prisma.tracks.findUnique({
+      where: { id: trackId },
+    });
+
+    handleNotFound(track);
+
+    return await this.prisma.tracks.update({
+      where: {
+        id: trackId,
+      },
+      data: {
+        ...updateTrackDto,
+      },
+    });
   }
 
   @Delete('/:trackId')
   @HttpCode(204)
   async deleteTrack(@Param('trackId', ParseUUIDPipe) trackId: string) {
-    const track = await this.trackService.getTrack(trackId);
-    await handleNotFound(track);
-    await this.trackService.deleteTrack(trackId);
+    const track = await this.prisma.tracks.findUnique({
+      where: { id: trackId },
+    });
+
+    handleNotFound(track);
+    await this.prisma.tracks.delete({ where: { id: trackId } });
     return { message: 'Track deleted successfully' };
   }
 }

@@ -1,38 +1,51 @@
+import { handleNotFound } from 'src/utils/errorHandlers';
+import { HidePasswordInterceptor } from 'src/Interceptors/hidePassword.interceptor';
 import {
   Controller,
   Get,
   Param,
+  UseInterceptors,
   Post,
   Body,
   Delete,
   Put,
   HttpCode,
+  ForbiddenException,
 } from '@nestjs/common';
-import { UserService } from './user.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { UserDto } from './dto/user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ParseUUIDPipe } from '@nestjs/common';
-import { handleNotFound, handleWrongPassword } from 'src/utils/errorHandlers';
 
 @Controller('user')
+@UseInterceptors(HidePasswordInterceptor)
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private prisma: PrismaService) {}
 
   @Get()
   async getUsers() {
-    return await this.userService.getUsers();
+    const users = await this.prisma.users.findMany();
+    return users.map((user) => {
+      if (user) {
+        delete user.password;
+      }
+      return user;
+    });
   }
 
   @Get('/:userId')
   async getUser(@Param('userId', ParseUUIDPipe) userId: string) {
-    const user = await this.userService.getUser(userId);
-    await handleNotFound(user);
+    const user = await this.prisma.users.findUnique({
+      where: { id: userId },
+    });
+
+    handleNotFound(user);
     return user;
   }
 
   @Post()
   async createUser(@Body() createUserDto: UserDto) {
-    return await this.userService.createUser(createUserDto);
+    return await this.prisma.users.create({ data: createUserDto });
   }
 
   @Put('/:userId')
@@ -40,20 +53,37 @@ export class UserController {
     @Body() updatePasswordDto: UpdatePasswordDto,
     @Param('userId', ParseUUIDPipe) userId: string,
   ) {
-    const user = await this.userService.getUser(userId);
+    const user = await this.prisma.users.findUnique({
+      where: { id: userId },
+    });
 
-    await handleNotFound(user);
-    await handleWrongPassword(user.password, updatePasswordDto.oldPassword);
+    handleNotFound(user);
 
-    return await this.userService.updatePassword(updatePasswordDto, userId);
+    if (user.password !== updatePasswordDto.oldPassword) {
+      throw new ForbiddenException('Wrong current password');
+    }
+
+    return await this.prisma.users.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        version: user.version + 1,
+        password: updatePasswordDto.newPassword,
+      },
+    });
   }
 
   @Delete('/:userId')
   @HttpCode(204)
   async deleteUser(@Param('userId', ParseUUIDPipe) userId: string) {
-    const user = await this.userService.getUser(userId);
-    await handleNotFound(user);
-    await this.userService.deleteUser(userId);
+    const user = await this.prisma.users.findUnique({
+      where: { id: userId },
+    });
+
+    handleNotFound(user);
+
+    await this.prisma.users.delete({ where: { id: userId } });
     return { message: 'User deleted successfully' };
   }
 }
