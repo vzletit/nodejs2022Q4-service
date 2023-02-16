@@ -36,10 +36,10 @@ CREATE TABLE "ArtistFav" (
 -- CreateTable
 CREATE TABLE "Track" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "artistId" UUID,
     "name" VARCHAR(255) NOT NULL,
     "duration" INTEGER NOT NULL,
     "albumId" UUID,
+    "artistId" UUID,
 
     CONSTRAINT "Track_pkey" PRIMARY KEY ("id")
 );
@@ -78,6 +78,12 @@ ALTER TABLE "AlbumFav" ADD CONSTRAINT "AlbumFav_albumId_fkey" FOREIGN KEY ("albu
 
 -- AddForeignKey
 ALTER TABLE "ArtistFav" ADD CONSTRAINT "ArtistFav_artistId_fkey" FOREIGN KEY ("artistId") REFERENCES "Artist"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Track" ADD CONSTRAINT "Track_albumId_fkey" FOREIGN KEY ("albumId") REFERENCES "Album"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Track" ADD CONSTRAINT "Track_artistId_fkey" FOREIGN KEY ("artistId") REFERENCES "Artist"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "TrackFav" ADD CONSTRAINT "TrackFav_trackId_fkey" FOREIGN KEY ("trackId") REFERENCES "Track"("id") ON DELETE CASCADE ON UPDATE CASCADE;

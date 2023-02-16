@@ -14,14 +14,14 @@ model Album {
   artistId String? @db.Uuid
 
   favorite AlbumFav?
+  Track    Track[]
 }
 
-
 model AlbumFav {
-  id    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  artist Album @relation(fields: [albumId], references: [id], onDelete: Cascade)
-  albumId  String @db.Uuid @unique
-  }
+  id      String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  artist  Album  @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  albumId String @unique @db.Uuid
+}
 
 model Artist {
   id     String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -29,41 +29,39 @@ model Artist {
   grammy Boolean
 
   favorite ArtistFav?
+  Track    Track[]
 }
 
 model ArtistFav {
-  id    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  artist Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
-  artistId  String @db.Uuid @unique
-  }
-
+  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  artist   Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  artistId String @unique @db.Uuid
+}
 
 model Track {
   id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  artistId String? @db.Uuid
   name     String  @db.VarChar(255)
   duration Int
+  album    Album?  @relation(fields: [albumId], references: [id], onDelete: SetNull)
   albumId  String? @db.Uuid
+
+  artist   Artist? @relation(fields: [artistId], references: [id], onDelete: SetNull)
+  artistId String? @db.Uuid
 
   favorite TrackFav?
 }
 
-
 model TrackFav {
-  id    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  artist Track @relation(fields: [trackId], references: [id], onDelete: Cascade)
-  trackId  String @db.Uuid @unique
-  }
-
-
-model User {
-  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  login      String   @db.VarChar(255)
-  password   String   @db.VarChar(255)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  version    Int      @default(1) 
+  id      String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  artist  Track  @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  trackId String @unique @db.Uuid
 }
 
-
-
+model User {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  login     String   @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  version   Int      @default(1)
+}
