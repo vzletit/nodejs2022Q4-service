@@ -1,6 +1,5 @@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Controller, Get, Param, Post, Delete, HttpCode } from '@nestjs/common';
-import { FavoritesService } from './favorites.service';
 import { ParseUUIDPipe } from '@nestjs/common';
 import { handleNotFound, handleUnprocessable } from 'src/utils/errorHandlers';
 

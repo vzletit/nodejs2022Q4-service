@@ -11,7 +11,9 @@ model Album {
   id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name     String  @db.VarChar(255)
   year     Int
+  artist   Artist? @relation(fields: [artistId], references: [id], onDelete: SetNull)
   artistId String? @db.Uuid
+  
 
   favorite AlbumFav?
   Track    Track[]
@@ -30,6 +32,7 @@ model Artist {
 
   favorite ArtistFav?
   Track    Track[]
+  Album    Album[]
 }
 
 model ArtistFav {

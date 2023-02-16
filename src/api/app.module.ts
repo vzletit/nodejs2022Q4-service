@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { DbService } from '../utils/db.service';
-import { Utils } from '../utils/utils.service';
 import { UserController } from './user/user.controller';
 import { ArtistController } from './artist/artist.controller';
 import { TrackController } from './track/track.controller';
@@ -17,6 +15,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
     AlbumController,
     FavoritesController,
   ],
-  providers: [PrismaService, DbService, Utils],
+  providers: [PrismaService],
 })
 export class AppModule {}
