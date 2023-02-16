@@ -1,69 +1,87 @@
+import { PrismaService } from 'src/prisma/prisma.service';
 import { Controller, Get, Param, Post, Delete, HttpCode } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { ParseUUIDPipe } from '@nestjs/common';
-import { TrackService } from 'src/api/track/track.service';
-import { AlbumService } from 'src/api/album/album.service';
-import { ArtistService } from 'src/api/artist/artist.service';
-import { handleUnprocessable } from 'src/utils/errorHandlers';
+import { handleNotFound, handleUnprocessable } from 'src/utils/errorHandlers';
 
 @Controller('favs')
 export class FavoritesController {
-  constructor(
-    private favoritesService: FavoritesService,
-    private trackService: TrackService,
-    private albumService: AlbumService,
-    private artistService: ArtistService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   @Get()
   async getFavs() {
-    return await this.favoritesService.getFavs();
+    return {
+      artists: await this.prisma.artist.findMany({
+        where: { favorite: { isNot: null } },
+      }),
+      albums: await this.prisma.album.findMany({
+        where: { favorite: { isNot: null } },
+      }),
+      tracks: await this.prisma.track.findMany({
+        where: { favorite: { isNot: null } },
+      }),
+    };
   }
 
   @Post('/track/:trackId')
-  async addTrackToFavs(@Param('trackId', ParseUUIDPipe) trackId: string) {
-    const track = await this.trackService.getTrack(trackId);
+  async addTrackToFavs(@Param('trackId', ParseUUIDPipe) trackId: any) {
+    const track = await this.prisma.track.findUnique({
+      where: { id: trackId },
+    });
+
     await handleUnprocessable(track);
 
-    await this.favoritesService.addToFavs('tracks', trackId);
+    await this.prisma.trackFav.create({ data: { trackId } });
     return { message: 'Successfully added to favorites' };
   }
 
   @Delete('/track/:trackId')
   @HttpCode(204)
   async removeTrackFromFavs(@Param('trackId', ParseUUIDPipe) trackId: string) {
-    const track = await this.trackService.getTrack(trackId);
-    await handleUnprocessable(track);
+    const faved = await this.prisma.trackFav.findUnique({
+      where: { trackId },
+    });
 
-    await this.favoritesService.removeFromFavs('tracks', trackId);
+    await handleUnprocessable(faved);
+
+    await this.prisma.trackFav.delete({ where: { trackId } });
     return { message: 'Successfully removed from favorites' };
   }
 
   @Post('/album/:albumId')
-  async addAlbumToFavs(@Param('albumId', ParseUUIDPipe) albumId: string) {
-    const album = await this.albumService.getAlbum(albumId);
+  async addAlbumToFavs(@Param('albumId', ParseUUIDPipe) albumId: any) {
+    const album = await this.prisma.album.findUnique({
+      where: { id: albumId },
+    });
+
     await handleUnprocessable(album);
 
-    await this.favoritesService.addToFavs('albums', albumId);
+    await this.prisma.albumFav.create({ data: { albumId } });
     return { message: 'Successfully added to favorites' };
   }
 
   @Delete('/album/:albumId')
   @HttpCode(204)
   async removeAlbumFromFavs(@Param('albumId', ParseUUIDPipe) albumId: string) {
-    const album = await this.albumService.getAlbum(albumId);
-    await handleUnprocessable(album);
+    const faved = await this.prisma.albumFav.findUnique({
+      where: { albumId },
+    });
 
-    await this.favoritesService.removeFromFavs('albums', albumId);
+    await handleUnprocessable(faved);
+
+    await this.prisma.albumFav.delete({ where: { albumId } });
     return { message: 'Successfully removed from favorites' };
   }
 
   @Post('/artist/:artistId')
   async addArtistToFavs(@Param('artistId', ParseUUIDPipe) artistId: string) {
-    const artist = await this.artistService.getArtist(artistId);
+    const artist = await this.prisma.artist.findUnique({
+      where: { id: artistId },
+    });
+
     await handleUnprocessable(artist);
 
-    await this.favoritesService.addToFavs('artists', artistId);
+    await this.prisma.artistFav.create({ data: { artistId } });
     return { message: 'Successfully added to favorites' };
   }
 
@@ -72,10 +90,13 @@ export class FavoritesController {
   async removeArtistFromFavs(
     @Param('artistId', ParseUUIDPipe) artistId: string,
   ) {
-    const artist = await this.artistService.getArtist(artistId);
-    await handleUnprocessable(artist);
+    const faved = await this.prisma.artistFav.findUnique({
+      where: { artistId },
+    });
 
-    await this.favoritesService.removeFromFavs('artists', artistId);
+    await handleUnprocessable(faved);
+
+    await this.prisma.artistFav.delete({ where: { artistId } });
     return { message: 'Successfully removed from favorites' };
   }
 }

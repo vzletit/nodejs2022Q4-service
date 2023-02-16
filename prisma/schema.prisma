@@ -7,32 +7,63 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model albums {
+model Album {
   id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name     String  @db.VarChar(255)
   year     Int
   artistId String? @db.Uuid
+
+  favorite AlbumFav?
 }
 
-model artists {
+
+model AlbumFav {
+  id    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  artist Album @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  albumId  String @db.Uuid @unique
+  }
+
+model Artist {
   id     String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name   String  @db.VarChar(255)
   grammy Boolean
+
+  favorite ArtistFav?
 }
 
-model tracks {
+model ArtistFav {
+  id    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  artist Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  artistId  String @db.Uuid @unique
+  }
+
+
+model Track {
   id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  artistid String? @db.Uuid
+  artistId String? @db.Uuid
   name     String  @db.VarChar(255)
   duration Int
   albumId  String? @db.Uuid
+
+  favorite TrackFav?
 }
 
-model users {
+
+model TrackFav {
+  id    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  artist Track @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  trackId  String @db.Uuid @unique
+  }
+
+
+model User {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   login      String   @db.VarChar(255)
   password   String   @db.VarChar(255)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   version    Int      @default(1) 
 }
+
+
+

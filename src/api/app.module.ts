@@ -6,7 +6,6 @@ import { ArtistController } from './artist/artist.controller';
 import { TrackController } from './track/track.controller';
 import { AlbumController } from './album/album.controller';
 import { FavoritesController } from './favorites/favorites.controller';
-import { FavoritesService } from './favorites/favorites.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
@@ -18,6 +17,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
     AlbumController,
     FavoritesController,
   ],
-  providers: [PrismaService, DbService, FavoritesService, Utils],
+  providers: [PrismaService, DbService, Utils],
 })
 export class AppModule {}

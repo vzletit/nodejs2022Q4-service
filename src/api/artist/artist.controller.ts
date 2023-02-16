@@ -19,21 +19,21 @@ export class ArtistController {
 
   @Get()
   async getArtists() {
-    return await this.prisma.artists.findMany();
+    return await this.prisma.artist.findMany();
   }
 
   @Get('/:artistId')
   async getArtist(@Param('artistId', ParseUUIDPipe) artistId: string) {
-    const artist = await this.prisma.artists.findUnique({
+    const artist = await this.prisma.artist.findUnique({
       where: { id: artistId },
     });
-    handleNotFound(artist);
+    await handleNotFound(artist);
     return artist;
   }
 
   @Post()
   async createArtist(@Body() createArtistDto: ArtistDto) {
-    return await this.prisma.artists.create({ data: createArtistDto });
+    return await this.prisma.artist.create({ data: createArtistDto });
   }
 
   @Put('/:artistId')
@@ -41,13 +41,13 @@ export class ArtistController {
     @Body() updateArtistDto: ArtistDto,
     @Param('artistId', ParseUUIDPipe) artistId: string,
   ) {
-    const artist = await this.prisma.artists.findUnique({
+    const artist = await this.prisma.artist.findUnique({
       where: { id: artistId },
     });
 
-    handleNotFound(artist);
+    await handleNotFound(artist);
 
-    return await this.prisma.artists.update({
+    return await this.prisma.artist.update({
       where: {
         id: artistId,
       },
@@ -60,12 +60,12 @@ export class ArtistController {
   @Delete('/:artistId')
   @HttpCode(204)
   async deleteArtist(@Param('artistId', ParseUUIDPipe) artistId: string) {
-    const artist = await this.prisma.artists.findUnique({
+    const artist = await this.prisma.artist.findUnique({
       where: { id: artistId },
     });
 
-    handleNotFound(artist);
-    await this.prisma.artists.delete({ where: { id: artistId } });
+    await handleNotFound(artist);
+    await this.prisma.artist.delete({ where: { id: artistId } });
     return { message: 'Artist deleted successfully' };
   }
 }

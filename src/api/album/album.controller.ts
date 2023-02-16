@@ -19,34 +19,34 @@ export class AlbumController {
 
   @Get()
   async getAlbums() {
-    return await this.prisma.albums.findMany();
+    return await this.prisma.album.findMany();
   }
 
   @Get('/:albumId')
   async getAlbum(@Param('albumId', ParseUUIDPipe) albumId: string) {
-    const album = await this.prisma.albums.findUnique({
+    const album = await this.prisma.album.findUnique({
       where: { id: albumId },
     });
-    handleNotFound(album);
+    await handleNotFound(album);
     return album;
   }
 
   @Post()
   async createAlbum(@Body() createAlbumDto: AlbumDto) {
-    return await this.prisma.albums.create({ data: createAlbumDto });
+    return await this.prisma.album.create({ data: createAlbumDto });
   }
   @Put('/:albumId')
   async updateAlbum(
     @Body() updateAlbumDto: AlbumDto,
     @Param('albumId', ParseUUIDPipe) albumId: string,
   ) {
-    const album = await this.prisma.albums.findUnique({
+    const album = await this.prisma.album.findUnique({
       where: { id: albumId },
     });
 
-    handleNotFound(album);
+    await handleNotFound(album);
 
-    return await this.prisma.albums.update({
+    return await this.prisma.album.update({
       where: {
         id: albumId,
       },
@@ -59,12 +59,12 @@ export class AlbumController {
   @Delete('/:albumId')
   @HttpCode(204)
   async deleteAlbum(@Param('albumId', ParseUUIDPipe) albumId: string) {
-    const album = await this.prisma.albums.findUnique({
+    const album = await this.prisma.album.findUnique({
       where: { id: albumId },
     });
 
-    handleNotFound(album);
-    await this.prisma.albums.delete({ where: { id: albumId } });
+    await handleNotFound(album);
+    await this.prisma.album.delete({ where: { id: albumId } });
     return { message: 'Album deleted successfully' };
   }
 }

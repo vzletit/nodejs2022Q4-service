@@ -19,21 +19,21 @@ export class TrackController {
 
   @Get()
   async getTracks() {
-    return await this.prisma.tracks.findMany();
+    return await this.prisma.track.findMany();
   }
 
   @Get('/:trackId')
   async getTrack(@Param('trackId', ParseUUIDPipe) trackId: string) {
-    const track = await this.prisma.tracks.findUnique({
+    const track = await this.prisma.track.findUnique({
       where: { id: trackId },
     });
-    handleNotFound(track);
+    await handleNotFound(track);
     return track;
   }
 
   @Post()
   async createTrack(@Body() createTrackDto: TrackDto) {
-    return await this.prisma.tracks.create({ data: createTrackDto });
+    return await this.prisma.track.create({ data: createTrackDto });
   }
 
   @Put('/:trackId')
@@ -41,13 +41,13 @@ export class TrackController {
     @Body() updateTrackDto: TrackDto,
     @Param('trackId', ParseUUIDPipe) trackId: string,
   ) {
-    const track = await this.prisma.tracks.findUnique({
+    const track = await this.prisma.track.findUnique({
       where: { id: trackId },
     });
 
-    handleNotFound(track);
+    await handleNotFound(track);
 
-    return await this.prisma.tracks.update({
+    return await this.prisma.track.update({
       where: {
         id: trackId,
       },
@@ -60,12 +60,12 @@ export class TrackController {
   @Delete('/:trackId')
   @HttpCode(204)
   async deleteTrack(@Param('trackId', ParseUUIDPipe) trackId: string) {
-    const track = await this.prisma.tracks.findUnique({
+    const track = await this.prisma.track.findUnique({
       where: { id: trackId },
     });
 
-    handleNotFound(track);
-    await this.prisma.tracks.delete({ where: { id: trackId } });
+    await handleNotFound(track);
+    await this.prisma.track.delete({ where: { id: trackId } });
     return { message: 'Track deleted successfully' };
   }
 }
