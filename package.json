@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "scan": "docker scan libraryservice",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "migrate": "npx prisma migrate deploy && npx prisma generate",    
