@@ -5,7 +5,9 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
-  "scripts": {
+  "scripts": {    
+    "build:app": "docker build -t vzletit/libraryservice:app .",
+    "build:db": "docker build -t vzletit/libraryservice:db ./db",
     "scan:app": "docker scan node",
     "scan:postgres": "docker scan postgres",
     "prebuild": "rimraf dist",

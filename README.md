@@ -35,6 +35,16 @@ Rename *.env.example* to *.env*
 mv .env.example .env
 ```
 
+## Building images with Docker
+
+Build app image:
+```
+npm run build:app
+```
+Build db image:
+```
+npm run build:db 
+```
 ## Running application with Docker Compose
 
 ```
