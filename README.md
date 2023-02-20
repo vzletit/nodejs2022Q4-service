@@ -31,7 +31,9 @@ npm install
 ```
 
 Rename *.env.example* to *.env*
-
+```
+mv .env.example .env
+```
 
 ## Running application with Docker Compose
 
