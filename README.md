@@ -1,6 +1,6 @@
 # Home Library Service
 
-Demo REST API online library for storing music tracks, artists and their albums with the ability to add to favorites. Under the hood uses NestJS and PostgreSQL DB.
+Demo REST API online library for storing music tracks, artists and their albums with the ability to add to favorites. Under the hood uses NestJS and PostgreSQL DB with Prisma ORM.
 
 ## Prerequisites
 
