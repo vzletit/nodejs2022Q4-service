@@ -1,11 +1,12 @@
 # Home Library Service
 
-Demo REST API online library for storing music tracks, artists and their albums with the ability to add to favorites. Under the hood uses NestJS and in-memory database.
+Demo REST API online library for storing music tracks, artists and their albums with the ability to add to favorites. Under the hood uses NestJS and PostgreSQL DB.
 
 ## Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+- Docker - [Download & Install Docker](https://www.docker.com/products/docker-desktop/).
 
 ## Downloading and installing
 Clone the repository:
@@ -17,53 +18,54 @@ Change directory:
 ```bash
 cd nodejs2022Q4-service 
 ```
-Switch to **dev** branch:
+Switch to **dev2** branch:
 
 ```bash
-git checkout dev
+git checkout dev2
 ```
 
-Install NPM modules with **--force** argument (due to @nestjs/swagger/plugin). There will be some vulnerabilities reported, even critical. Disregard them. We are brave guys. :-)
+Install NPM modules 
 
 ```
-npm install --force
+npm install
 ```
 
 Rename *.env.example* to *.env*
 
 
-## Running application
+## Running application with Docker Compose
 
 ```
-npm start
+npm run start:docker
 ```
 
-After starting the app on port (4000 as default. Can be changed in *.env*) you can open in your browser OpenAPI Swagger http://localhost:4000.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+## API
 
+OpenAPI description can be found in */doc/newApi.yaml* file.
+
+## Vulnerabilities scanning
+
+Scan App image:
+
+```
+npm run scan:app
+```
+
+Scan Postgres image:
+
+```
+npm run scan:postgres
+```
 ## Testing
 
-After application running open new terminal and enter:
-
-To run all tests without authorization
+When application is running, open new terminal and enter:
 
 ```
 npm run test
 ```
 
-To run only one of all test suites
-
-```
-npm run test -- <path to suite>
-```
-
-
-### Auto-fix and format
+### Linting
 
 ```
 npm run lint
-```
-
-```
-npm run format
 ```
