@@ -12,6 +12,7 @@ import {
   Put,
   HttpCode,
   ForbiddenException,
+  UseFilters,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserDto } from './dto/user.dto';
@@ -47,7 +48,11 @@ export class UserController {
 
   @Post()
   async createUser(@Body() createUserDto: UserDto) {
-    return await this.prisma.user.create({ data: createUserDto });
+    try {
+      return await this.prisma.user.create({ data: createUserDto });
+    } catch (err) {
+      throw new ForbiddenException();
+    }
   }
 
   @Put('/:userId')

@@ -1,23 +1,32 @@
-import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 
 @Injectable()
 export class LoggingService implements NestMiddleware {
-  private logger = new Logger('HTTP');
-
   use(request: Request, response: Response, next: NextFunction): void {
-    const { ip, method, path: url, query, body } = request;
-    const userAgent = request.get('user-agent') || '';
+    const { method, path: url, query, body } = request;
 
-    response.on('close', () => {
-      const { statusCode } = response;
+    const send = response.send;
+    response.send = (exitData) => {
+      if (
+        response
+          ?.getHeader('content-type')
+          ?.toString()
+          .includes('application/json')
+      ) {
+        const logObj = { TIMESTAMP: new Date(), REQ: null, RES: null };
 
-      this.logger.log(
-        `${method}: ${url}, query: ${JSON.stringify(
-          query,
-        )}, body: ${JSON.stringify(body)} - ${statusCode} `,
-      );
-    });
+        logObj.RES = {
+          code: response.statusCode,
+          body: exitData.toString().substring(0, 1000),
+        };
+        logObj.REQ = { method, url, query, body };
+
+        console.log(logObj);
+      }
+      response.send = send;
+      return response.send(exitData);
+    };
 
     next();
   }
