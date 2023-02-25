@@ -4,9 +4,9 @@ import { CustomLogger } from './custom-logger.service';
 
 @Injectable()
 export class LoggingMiddleware implements NestMiddleware {
-  constructor(private CustomLogger: CustomLogger) {}
+  constructor(private customLogger: CustomLogger) {}
   use(request: Request, response: Response, next: NextFunction): void {
-    const { method, path: url, query, body } = request;
+    const { method, baseUrl, query, body } = request;
 
     const send = response.send;
     response.send = (exitData) => {
@@ -20,13 +20,18 @@ export class LoggingMiddleware implements NestMiddleware {
 
         logObj.RES = {
           code: response.statusCode,
-          body: exitData.toString().substring(0, 1000),
+          body: JSON.parse(exitData),
         };
-        logObj.REQ = { method, url, query, body };
+        logObj.REQ = { method, url: baseUrl, query, body };
 
-        console.log(logObj);
+        if (response.statusCode >= 200 && response.statusCode <= 300) {
+          this.customLogger.log(logObj);
+        }
       }
+      // throw new Error();
+
       response.send = send;
+
       return response.send(exitData);
     };
 

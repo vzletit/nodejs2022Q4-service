@@ -5,10 +5,11 @@ import { CustomLogger } from 'src/custom-logger/custom-logger.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService, private logger: CustomLogger) {}
+  constructor(private prisma: PrismaService, private logger: CustomLogger) {
+    this.logger.setContext('USER');
+  }
 
   async getUsers() {
-    this.logger.warn('WOWOWOWOW!');
     return await this.prisma.user.findMany();
   }
   async getUser(userId: string) {

@@ -1,31 +1,33 @@
 import { Injectable, LoggerService, ConsoleLogger } from '@nestjs/common';
 @Injectable()
-export class CustomLogger implements LoggerService {
+export class CustomLogger extends ConsoleLogger {
+  // writeFile() {}
+
   /**
    * Write a 'log' level log.
    */
   log(message: any, ...optionalParams: any[]) {
-    console.log(message);
+    super.log(message);
   }
 
   /**
    * Write an 'error' level log.
    */
   error(message: any, ...optionalParams: any[]) {
-    console.log(message);
+    super.error(message);
   }
 
   /**
    * Write a 'warn' level log.
    */
   warn(message: any, ...optionalParams: any[]) {
-    console.log(message);
+    super.warn(message);
   }
 
   /**
    * Write a 'debug' level log.
    */
-  debug?(message: any, ...optionalParams: any[]) {
+  debug(message: any, ...optionalParams: any[]) {
     console.log(message);
   }
 
