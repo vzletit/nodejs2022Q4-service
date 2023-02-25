@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserDto } from './dto/user.dto';
+import { CustomLogger } from 'src/custom-logger/custom-logger.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private logger: CustomLogger) {}
 
   async getUsers() {
+    this.logger.warn('WOWOWOWOW!');
     return await this.prisma.user.findMany();
   }
   async getUser(userId: string) {
