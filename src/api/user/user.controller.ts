@@ -12,9 +12,9 @@ import {
   Put,
   HttpCode,
   ForbiddenException,
-  UseFilters,
+  // UseFilters,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { UserService } from './user.service';
 import { UserDto } from './dto/user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ParseUUIDPipe } from '@nestjs/common';
@@ -23,11 +23,11 @@ import { ParseUUIDPipe } from '@nestjs/common';
 @UseInterceptors(HidePasswordInterceptor)
 @UseInterceptors(ConvertDateTimeInterceptor)
 export class UserController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private user: UserService) {}
 
   @Get()
   async getUsers() {
-    const users = await this.prisma.user.findMany();
+    const users = await this.user.getUsers();
     return users.map((user) => {
       if (user) {
         delete user.password;
@@ -38,9 +38,7 @@ export class UserController {
 
   @Get('/:userId')
   async getUser(@Param('userId', ParseUUIDPipe) userId: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-    });
+    const user = await this.user.getUser(userId);
 
     await handleNotFound(user);
     return user;
@@ -49,7 +47,7 @@ export class UserController {
   @Post()
   async createUser(@Body() createUserDto: UserDto) {
     try {
-      return await this.prisma.user.create({ data: createUserDto });
+      return await this.user.createUser(createUserDto);
     } catch (err) {
       throw new ForbiddenException();
     }
@@ -60,9 +58,7 @@ export class UserController {
     @Body() updatePasswordDto: UpdatePasswordDto,
     @Param('userId', ParseUUIDPipe) userId: string,
   ) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-    });
+    const user = await this.user.getUser(userId);
 
     await handleNotFound(user);
 
@@ -70,27 +66,23 @@ export class UserController {
       throw new ForbiddenException('Wrong current password');
     }
 
-    return await this.prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
+    return await this.user.updateUser(
+      {
         version: user.version + 1,
         password: updatePasswordDto.newPassword,
       },
-    });
+      userId,
+    );
   }
 
   @Delete('/:userId')
   @HttpCode(204)
   async deleteUser(@Param('userId', ParseUUIDPipe) userId: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-    });
+    const user = await this.user.getUser(userId);
 
     await handleNotFound(user);
 
-    await this.prisma.user.delete({ where: { id: userId } });
+    await this.user.deleteUser(userId);
     return { message: 'User deleted successfully' };
   }
 }

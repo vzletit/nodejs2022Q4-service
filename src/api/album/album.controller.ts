@@ -8,63 +8,50 @@ import {
   Put,
   HttpCode,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { AlbumService } from './album.service';
 import { AlbumDto } from './dto/album.dto';
 import { ParseUUIDPipe } from '@nestjs/common';
 import { handleNotFound } from 'src/utils/errorHandlers';
 
 @Controller('album')
 export class AlbumController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private album: AlbumService) {}
 
   @Get()
   async getAlbums() {
-    return await this.prisma.album.findMany();
+    return await this.album.getAlbums();
   }
 
   @Get('/:albumId')
   async getAlbum(@Param('albumId', ParseUUIDPipe) albumId: string) {
-    const album = await this.prisma.album.findUnique({
-      where: { id: albumId },
-    });
+    const album = await this.album.getAlbum(albumId);
     await handleNotFound(album);
     return album;
   }
 
   @Post()
   async createAlbum(@Body() createAlbumDto: AlbumDto) {
-    return await this.prisma.album.create({ data: createAlbumDto });
+    return await this.album.createAlbum(createAlbumDto);
   }
   @Put('/:albumId')
   async updateAlbum(
     @Body() updateAlbumDto: AlbumDto,
     @Param('albumId', ParseUUIDPipe) albumId: string,
   ) {
-    const album = await this.prisma.album.findUnique({
-      where: { id: albumId },
-    });
+    const album = await this.album.getAlbum(albumId);
 
     await handleNotFound(album);
 
-    return await this.prisma.album.update({
-      where: {
-        id: albumId,
-      },
-      data: {
-        ...updateAlbumDto,
-      },
-    });
+    return await this.album.updateAlbum(updateAlbumDto, albumId);
   }
 
   @Delete('/:albumId')
   @HttpCode(204)
   async deleteAlbum(@Param('albumId', ParseUUIDPipe) albumId: string) {
-    const album = await this.prisma.album.findUnique({
-      where: { id: albumId },
-    });
+    const album = await this.album.getAlbum(albumId);
 
     await handleNotFound(album);
-    await this.prisma.album.delete({ where: { id: albumId } });
+    await this.album.deleteAlbum(albumId);
     return { message: 'Album deleted successfully' };
   }
 }
