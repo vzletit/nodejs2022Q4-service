@@ -5,6 +5,8 @@ import { readdir, stat } from 'node:fs/promises';
 
 @Injectable()
 export class CustomLogger extends ConsoleLogger {
+  private level = process.env.LOG_LEVEL || 0;
+
   private genNewFileName(prefix) {
     const date = new Date();
 
@@ -64,41 +66,28 @@ export class CustomLogger extends ConsoleLogger {
 
   private renderLine(data, prefix) {
     return 'req' in data
-      ? `${prefix} (${data.timeStamp}) >>> REQUEST (${data.req.method}: ${
+      ? `${prefix} (${data.timeStamp}) >>> REQ (${
           data.req.url
-        }, QUERY: ${JSON.stringify(data.req.query)}):  BODY: ${JSON.stringify(
-          data.req.body,
-        )}  >>> RESPONSE (${data.res.code}):  BODY: ${JSON.stringify(
-          data.res.body,
-        )}`
-      : `${prefix} (${data.timeStamp}) >>> (${
+        }, QUERY: ${JSON.stringify(data.req.query)}, ${
+          data.req.method
+        }):  BODY: ${JSON.stringify(data.req.body)} >>> RES (${
           data.res.code
-        }):  ${JSON.stringify(data.res.body)}`;
-  }
-
-  /**
-   * Write a 'log' level log.
-   */
-
-  async log(message: any, ...optionalParams: any[]) {
-    if (message.timeStamp !== undefined) {
-      await this.writeLogToFile(
-        this.renderLine(message, 'LOG'),
-        await this.getFilePathByPrefix('LOG'),
-      );
-    }
-    super.log(message);
+        }):  BODY: ${JSON.stringify(data.res.body)}`
+      : `${prefix} (${data.timeStamp}) > (${data.res.code}):  ${JSON.stringify(
+          data.res.body,
+        )}`;
   }
 
   /**
    * Write an 'error' level log.
    */
   async error(message: any, ...optionalParams: any[]) {
-    if (message.timeStamp !== undefined) {
+    if (this.level >= 0 && message.timeStamp !== undefined) {
       await this.writeLogToFile(
         this.renderLine(message, 'ERROR'),
         await this.getFilePathByPrefix('ERROR'),
       );
+      return super.error(this.renderLine(message, ':'));
     }
     super.error(message);
   }
@@ -107,13 +96,29 @@ export class CustomLogger extends ConsoleLogger {
    * Write a 'warn' level log.
    */
   async warn(message: any, ...optionalParams: any[]) {
-    if (message.timeStamp !== undefined) {
+    if (this.level >= 1 && message.timeStamp !== undefined) {
       await this.writeLogToFile(
-        this.renderLine(message, 'WARNING'),
+        this.renderLine(message, 'WARN'),
         await this.getFilePathByPrefix('LOG'),
       );
+      return super.warn(this.renderLine(message, ':'));
     }
     super.warn(message);
+  }
+
+  /**
+   * Write a 'log' level log.
+   */
+
+  async log(message: any, ...optionalParams: any[]) {
+    if (this.level >= 2 && message.timeStamp !== undefined) {
+      await this.writeLogToFile(
+        this.renderLine(message, 'LOG'),
+        await this.getFilePathByPrefix('LOG'),
+      );
+      return super.log(this.renderLine(message, ':'));
+    }
+    super.log(message);
   }
 
   /**
@@ -126,4 +131,7 @@ export class CustomLogger extends ConsoleLogger {
   /**
    * Write a 'verbose' level log.
    */
+  verbose(message: any, ...optionalParams: any[]) {
+    console.log(message);
+  }
 }
