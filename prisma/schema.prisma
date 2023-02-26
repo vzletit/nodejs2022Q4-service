@@ -64,7 +64,7 @@ model TrackFav {
 
 model User {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  login     String   @db.VarChar(255)
+  login     String   @unique @db.VarChar(255) 
   password  String   @db.VarChar(255)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

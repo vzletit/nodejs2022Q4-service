@@ -7,6 +7,7 @@ import { ArtistModule } from './artist/artist.module';
 import { TrackModule } from './track/track.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { LoggingMiddleware } from 'src/custom-logger/custom-logger.middleware';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { LoggingMiddleware } from 'src/custom-logger/custom-logger.middleware';
     ArtistModule,
     TrackModule,
     FavoritesModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [PrismaService, LoggingMiddleware],

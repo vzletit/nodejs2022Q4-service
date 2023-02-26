@@ -39,8 +39,6 @@ export class CustomLogger extends ConsoleLogger {
   private async writeLogToFile(data: string, filePath: string): Promise<void> {
     if (process.env.LOG_ENABLED !== 'true') return;
 
-    console.log('WRITE!!!', data);
-
     let fileSize = 0;
 
     try {

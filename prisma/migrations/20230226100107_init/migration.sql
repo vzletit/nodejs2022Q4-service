@@ -73,6 +73,9 @@ CREATE UNIQUE INDEX "ArtistFav_artistId_key" ON "ArtistFav"("artistId");
 -- CreateIndex
 CREATE UNIQUE INDEX "TrackFav_trackId_key" ON "TrackFav"("trackId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "User_login_key" ON "User"("login");
+
 -- AddForeignKey
 ALTER TABLE "Album" ADD CONSTRAINT "Album_artistId_fkey" FOREIGN KEY ("artistId") REFERENCES "Artist"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
