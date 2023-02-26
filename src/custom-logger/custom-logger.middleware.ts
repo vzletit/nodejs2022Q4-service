@@ -16,15 +16,20 @@ export class LoggingMiddleware implements NestMiddleware {
           ?.toString()
           .includes('application/json')
       ) {
-        const logObj = { TIMESTAMP: new Date(), REQ: null, RES: null };
+        const logObj = {
+          timeStamp: new Date().toISOString(),
+          req: null,
+          res: null,
+        };
 
-        logObj.RES = {
+        logObj.res = {
           code: response.statusCode,
           body: JSON.parse(exitData),
         };
-        logObj.REQ = { method, url: baseUrl, query, body };
+        logObj.req = { method, url: baseUrl, query, body };
 
         if (response.statusCode >= 200 && response.statusCode <= 300) {
+
           this.customLogger.log(logObj);
         }
       }

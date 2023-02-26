@@ -25,10 +25,16 @@ export const getErrorMessage = <T>(exception: T): string => {
 export class AllExceptionFilter<T> implements ExceptionFilter {
   constructor(private customLogger: CustomLogger) {
     process.on('uncaughtException', () => {
-      this.customLogger.error('uncaught Exception');
+      this.customLogger.error({
+        statusCode: 500,
+        message: 'uncaught Exception',
+      });
     });
-    process.on('unhandledRejection', () => {
-      this.customLogger.error('Unhandled Promise Rejection');
+    process.on('unhandledRejection', (err) => {
+      this.customLogger.error({
+        statusCode: 500,
+        message: `unhandled promise rejection.  ${err}`,
+      });
     });
   }
 
@@ -39,15 +45,17 @@ export class AllExceptionFilter<T> implements ExceptionFilter {
     const statusCode = getStatusCode<T>(exception);
     const message = getErrorMessage<T>(exception);
 
-    this.customLogger.error({ message, statusCode });
-
-    response.status(statusCode).json({
+    const errorObj = {
       error: {
-        timestamp: new Date().toISOString(),
+        timeStamp: new Date().toISOString(),
         path: request.url,
         statusCode,
         message,
       },
-    });
+    };
+
+    this.customLogger.error(errorObj);
+
+    response.status(statusCode).json(errorObj);
   }
 }
