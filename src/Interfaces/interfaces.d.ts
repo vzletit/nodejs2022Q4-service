@@ -10,6 +10,23 @@ interface Favorites {
   albums: string[]; // favorite albums ids
   tracks: string[]; // favorite tracks ids
 }
+interface ReqDataObject {
+  method: string;
+  url: string;
+  query;
+  body;
+}
+
+interface ResDataObject {
+  code: number;
+  body;
+}
+
+interface LogDataObject {
+  timeStamp: string;
+  req: ReqDataObject;
+  res: ResDataObject;
+}
 
 interface Db {
   users: UserDto[];

@@ -1,5 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
+import { LogDataObject } from 'src/Interfaces/interfaces';
 import { CustomLogger } from './custom-logger.service';
 
 @Injectable()
@@ -16,23 +17,24 @@ export class LoggingMiddleware implements NestMiddleware {
           ?.toString()
           .includes('application/json')
       ) {
-        const logObj = {
+        const logDataObject: LogDataObject = {
           timeStamp: new Date().toISOString(),
           req: null,
           res: null,
         };
 
-        logObj.res = {
+        logDataObject.res = {
           code: response.statusCode,
           body: JSON.parse(exitData),
         };
-        logObj.req = { method, url: baseUrl, query, body };
+        logDataObject.req = { method, url: baseUrl, query, body };
 
-        if (response.statusCode >= 200 && response.statusCode <= 300) {
-          this.customLogger.log(logObj);
+        if (response.statusCode >= 200 && response.statusCode < 400) {
+          this.customLogger.log(logDataObject);
+        } else {
+          this.customLogger.error(logDataObject);
         }
       }
-      // throw new Error();
 
       response.send = send;
 

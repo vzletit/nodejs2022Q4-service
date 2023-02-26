@@ -5,10 +5,10 @@ import { readdir, stat } from 'node:fs/promises';
 
 @Injectable()
 export class CustomLogger extends ConsoleLogger {
-  private genNewFileName() {
+  private genNewFileName(prefix) {
     const date = new Date();
 
-    return `${process.env.LOG_PREFIX}${date.getFullYear()}-${String(
+    return `${prefix}__${date.getFullYear()}-${String(
       date.getMonth() + 1,
     ).padStart(2, '0')}-${String(date.getDate() + 1).padStart(
       2,
@@ -16,24 +16,20 @@ export class CustomLogger extends ConsoleLogger {
     )}_${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}.log_current`;
   }
 
-  private async getLogFilePath() {
+  private async getFilePathByPrefix(prefix = 'LOG') {
     const logDir = path.join(__dirname, '../../', process.env.LOG_DIR || 'log');
 
     try {
-      const existedCurrentLogFile = (await readdir(logDir)).filter((file) =>
-        file.endsWith('_current'),
+      const existedCurrentLogFile = (await readdir(logDir)).filter(
+        (file) => file.startsWith(prefix) && file.endsWith('_current'),
       )[0];
 
       return existedCurrentLogFile
         ? path.join(logDir, existedCurrentLogFile)
-        : path.join(logDir, this.genNewFileName());
+        : path.join(logDir, this.genNewFileName(prefix));
     } catch (err) {
       console.log(err);
     }
-  }
-
-  private formatString(str: string): string {
-    return str.split('"').join('').split(',').join(', ');
   }
 
   private async writeLogToFile(data: string, filePath: string): Promise<void> {
@@ -56,15 +52,28 @@ export class CustomLogger extends ConsoleLogger {
         }
       });
 
-      fileToWrite = await this.getLogFilePath();
+      fileToWrite = await this.getFilePathByPrefix();
     }
     try {
       const stream = fs.createWriteStream(fileToWrite, { flags: 'a' });
       stream.write(data + '\r\n');
-      // stream.end();
     } catch (err) {
       console.log(err);
     }
+  }
+
+  private renderLine(data, prefix) {
+    return 'req' in data
+      ? `${prefix} (${data.timeStamp}) >>> REQUEST (${data.req.method}: ${
+          data.req.url
+        }, QUERY: ${JSON.stringify(data.req.query)}):  BODY: ${JSON.stringify(
+          data.req.body,
+        )}  >>> RESPONSE (${data.res.code}):  BODY: ${JSON.stringify(
+          data.res.body,
+        )}`
+      : `${prefix} (${data.timeStamp}) >>> (${
+          data.res.code
+        }):  ${JSON.stringify(data.res.body)}`;
   }
 
   /**
@@ -72,13 +81,10 @@ export class CustomLogger extends ConsoleLogger {
    */
 
   async log(message: any, ...optionalParams: any[]) {
-    if (message.req !== undefined) {
-      const serializedRequest = this.formatString(JSON.stringify(message.req));
-      const serializedResponse = this.formatString(JSON.stringify(message.res));
-
+    if (message.timeStamp !== undefined) {
       await this.writeLogToFile(
-        `LOG (${message.timeStamp}) >>> REQUEST: ${serializedRequest} >>> RESPONSE: ${serializedResponse}`,
-        await this.getLogFilePath(),
+        this.renderLine(message, 'LOG'),
+        await this.getFilePathByPrefix('LOG'),
       );
     }
     super.log(message);
@@ -88,17 +94,25 @@ export class CustomLogger extends ConsoleLogger {
    * Write an 'error' level log.
    */
   async error(message: any, ...optionalParams: any[]) {
-    await this.writeLogToFile(
-      `ERR (${message.error.timeStamp}) (${message.error.statusCode}) >>> ${message.error.message}`,
-      await this.getLogFilePath(),
-    );
+    if (message.timeStamp !== undefined) {
+      await this.writeLogToFile(
+        this.renderLine(message, 'ERROR'),
+        await this.getFilePathByPrefix('ERROR'),
+      );
+    }
     super.error(message);
   }
 
   /**
    * Write a 'warn' level log.
    */
-  warn(message: any, ...optionalParams: any[]) {
+  async warn(message: any, ...optionalParams: any[]) {
+    if (message.timeStamp !== undefined) {
+      await this.writeLogToFile(
+        this.renderLine(message, 'WARNING'),
+        await this.getFilePathByPrefix('LOG'),
+      );
+    }
     super.warn(message);
   }
 

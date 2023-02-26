@@ -26,14 +26,14 @@ export class AllExceptionFilter<T> implements ExceptionFilter {
   constructor(private customLogger: CustomLogger) {
     process.on('uncaughtException', () => {
       this.customLogger.error({
-        statusCode: 500,
-        message: 'uncaught Exception',
+        timeStamp: new Date().toISOString(),
+        res: { code: 500, body: 'Uncaught Exception' },
       });
     });
     process.on('unhandledRejection', (err) => {
       this.customLogger.error({
-        statusCode: 500,
-        message: `unhandled promise rejection.  ${err}`,
+        timeStamp: new Date().toISOString(),
+        res: { code: 500, body: 'Unhandled Promise Rejection' },
       });
     });
   }
@@ -47,14 +47,11 @@ export class AllExceptionFilter<T> implements ExceptionFilter {
 
     const errorObj = {
       error: {
-        timeStamp: new Date().toISOString(),
         path: request.url,
         statusCode,
         message,
       },
     };
-
-    this.customLogger.error(errorObj);
 
     response.status(statusCode).json(errorObj);
   }
