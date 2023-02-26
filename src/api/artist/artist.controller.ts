@@ -7,13 +7,16 @@ import {
   Delete,
   Put,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { ArtistService } from './artist.service';
 import { ArtistDto } from './dto/artist.dto';
 import { ParseUUIDPipe } from '@nestjs/common';
 import { handleNotFound } from 'src/utils/errorHandlers';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('artist')
+@UseGuards(AuthGuard)
 export class ArtistController {
   constructor(private artist: ArtistService) {}
 

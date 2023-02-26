@@ -7,13 +7,16 @@ import {
   Delete,
   Put,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { TrackService } from './track.service';
 import { TrackDto } from './dto/track.dto';
 import { ParseUUIDPipe } from '@nestjs/common';
 import { handleNotFound } from 'src/utils/errorHandlers';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('track')
+@UseGuards(AuthGuard)
 export class TrackController {
   constructor(private track: TrackService) {}
 

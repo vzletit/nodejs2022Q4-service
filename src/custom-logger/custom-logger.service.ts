@@ -77,7 +77,7 @@ export class CustomLogger extends ConsoleLogger {
       const serializedResponse = this.formatString(JSON.stringify(message.res));
 
       await this.writeLogToFile(
-        `LOG ::: (${message.timeStamp}) >> REQUEST: ${serializedRequest} >> RESPONSE: ${serializedResponse}`,
+        `LOG (${message.timeStamp}) >>> REQUEST: ${serializedRequest} >>> RESPONSE: ${serializedResponse}`,
         await this.getLogFilePath(),
       );
     }

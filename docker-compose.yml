@@ -2,6 +2,7 @@ version: "3.5"
 services:
   app:
     image: node:18-alpine
+    #command: sh -c "npm install && npm run migrate:init && npm run start:dev"
     command: sh -c "npm install && npm run migrate && npm run start:dev"
     build: .
     ports:

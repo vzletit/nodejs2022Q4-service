@@ -12,7 +12,7 @@
     "scan:postgres": "docker scan postgres",
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "migrate:init": "npx prisma migrate dev --name INIT --create-only && npx prisma generate",
+    "migrate:init": "npx prisma migrate dev --name INIT --create-only && npx prisma generate",    
     "migrate": "npx prisma migrate dev && npx prisma generate",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",

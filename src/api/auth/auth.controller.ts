@@ -22,15 +22,14 @@ export class AuthController {
 
   @Post('/signup')
   async signup(@Body() signUpDto: UserDto) {
-    const user = await this.user.getUserByLogin(signUpDto.login);
-    if (user) {
-      throw new BadRequestException('User already exists');
-    }
+    // const user = await this.user.getUserByLogin(signUpDto.login);
+    // if (user) {
+    //   throw new BadRequestException('User already exists');
+    // }
     return await this.auth.signUp(signUpDto);
   }
 
   //   POST auth/login - send login and password to get Access token and Refresh token (optionally)
-  
 
   @Post('/login')
   @HttpCode(200)
@@ -43,6 +42,6 @@ export class AuthController {
     if (!(await this.auth.isPasswordCorrect(user, loginDto.password))) {
       throw new ForbiddenException('Authentication failed');
     }
-    return user;
+    return await this.auth.login(user);
   }
 }

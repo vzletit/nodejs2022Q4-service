@@ -1,5 +1,4 @@
 import { Injectable, UseInterceptors } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { UserDto } from '../user/dto/user.dto';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt/dist';
@@ -7,11 +6,7 @@ import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private prisma: PrismaService,
-    private user: UserService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private user: UserService, private jwtService: JwtService) {}
 
   async isPasswordCorrect(
     user: UserDto,
@@ -27,9 +22,16 @@ export class AuthService {
     );
     const newUserDto = { ...createUserDto, password: hashedPassword };
     const user = await this.user.createUser(newUserDto);
-    delete user.password;
-    return { token: this.jwtService.sign(user) };
+
+    return {
+      ...user,
+      accessToken: this.jwtService.sign({ userId: user.id, login: user.login }),
+    };
   }
 
-  async login(createUserDto: UserDto) {}
+  async login(user) {
+    return {
+      accessToken: this.jwtService.sign({ userId: user.id, login: user.login }),
+    };
+  }
 }

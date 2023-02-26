@@ -12,14 +12,16 @@ import {
   Put,
   HttpCode,
   ForbiddenException,
-  // UseFilters,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDto } from './dto/user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ParseUUIDPipe } from '@nestjs/common';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('user')
+@UseGuards(AuthGuard)
 @UseInterceptors(HidePasswordInterceptor)
 @UseInterceptors(ConvertDateTimeInterceptor)
 export class UserController {
