@@ -8,6 +8,8 @@ import { TrackModule } from './track/track.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { LoggingMiddleware } from 'src/custom-logger/custom-logger.middleware';
 import { AuthModule } from './auth/auth.module';
+import { JwtAuthGuard } from './auth/auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -20,7 +22,11 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
   ],
   controllers: [],
-  providers: [PrismaService, LoggingMiddleware],
+  providers: [
+    PrismaService,
+    LoggingMiddleware,
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+  ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

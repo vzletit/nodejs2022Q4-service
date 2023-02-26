@@ -1,20 +1,18 @@
 import { BadRequestException, Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
-  Get,
-  Param,
   UseInterceptors,
   Post,
   Body,
-  Delete,
-  Put,
   HttpCode,
   ForbiddenException,
 } from '@nestjs/common';
+import { Public } from './public.decorator';
 import { UserDto } from '../user/dto/user.dto';
 import { UserService } from '../user/user.service';
 import { HidePasswordInterceptor } from 'src/Interceptors/hidePassword.interceptor';
 
+@Public()
 @Controller('auth')
 @UseInterceptors(HidePasswordInterceptor)
 export class AuthController {

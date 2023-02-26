@@ -7,16 +7,15 @@ import {
   Delete,
   Put,
   HttpCode,
-  UseGuards,
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
 import { AlbumDto } from './dto/album.dto';
 import { ParseUUIDPipe } from '@nestjs/common';
 import { handleNotFound } from 'src/utils/errorHandlers';
-import { AuthGuard } from '../auth/auth.guard';
+import { Public } from '../auth/public.decorator';
 
+@Public()
 @Controller('album')
-@UseGuards(AuthGuard)
 export class AlbumController {
   constructor(private album: AlbumService) {}
 

@@ -1,22 +1,12 @@
-import {
-  Controller,
-  Get,
-  Param,
-  Post,
-  Delete,
-  HttpCode,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Param, Post, Delete, HttpCode } from '@nestjs/common';
 import { ParseUUIDPipe } from '@nestjs/common';
 import { handleUnprocessable } from 'src/utils/errorHandlers';
 import { FavoritesService } from './favorites.service';
 import { ArtistService } from '../artist/artist.service';
 import { TrackService } from '../track/track.service';
 import { AlbumService } from '../album/album.service';
-import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('favs')
-@UseGuards(AuthGuard)
 export class FavoritesController {
   constructor(
     private favs: FavoritesService,
