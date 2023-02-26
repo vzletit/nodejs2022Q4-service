@@ -27,14 +27,23 @@ export class AllExceptionFilter<T> implements ExceptionFilter {
     process.on('uncaughtException', () => {
       this.customLogger.error({
         timeStamp: new Date().toISOString(),
-        res: { code: 500, body: 'Uncaught Exception' },
+        res: { code: 500, body: 'Uncaught Exception. Application Stopped' },
       });
+      setTimeout(() => {
+        process.exit(1);
+      }, 2000);
     });
     process.on('unhandledRejection', (err) => {
       this.customLogger.error({
         timeStamp: new Date().toISOString(),
-        res: { code: 500, body: 'Unhandled Promise Rejection' },
+        res: {
+          code: 500,
+          body: 'Unhandled Promise Rejection. Application Stopped',
+        },
       });
+      setTimeout(() => {
+        process.exit(1);
+      }, 2000);
     });
   }
 
