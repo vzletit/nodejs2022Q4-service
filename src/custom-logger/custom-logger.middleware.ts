@@ -29,7 +29,6 @@ export class LoggingMiddleware implements NestMiddleware {
         logObj.req = { method, url: baseUrl, query, body };
 
         if (response.statusCode >= 200 && response.statusCode <= 300) {
-
           this.customLogger.log(logObj);
         }
       }
