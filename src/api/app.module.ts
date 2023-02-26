@@ -10,6 +10,7 @@ import { LoggingMiddleware } from 'src/custom-logger/custom-logger.middleware';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { DocModule } from './doc/doc.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { APP_GUARD } from '@nestjs/core';
     TrackModule,
     FavoritesModule,
     AuthModule,
+    DocModule,
   ],
   controllers: [],
   providers: [
