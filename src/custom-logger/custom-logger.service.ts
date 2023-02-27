@@ -18,7 +18,7 @@ export class CustomLogger extends ConsoleLogger {
     )}_${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}.log_current`;
   }
 
-  private async checkDirectoryExists(directoryPath: string) {
+  private checkDirectoryExists(directoryPath: string) {
     if (!fs.existsSync(directoryPath)) {
       super.warn(
         `LOG directory ${directoryPath} not found and will be created.`,
@@ -93,7 +93,7 @@ export class CustomLogger extends ConsoleLogger {
   /**
    * Write an 'error' level log.
    */
-  async error(message: any, ...optionalParams: any[]) {
+  error(message: any, ...optionalParams: any[]) {
     if (this.level >= 0 && message.timeStamp !== undefined) {
       const prefix = 'ERROR';
       const fileToWriteFullPath = this.getFilePathByPrefix(prefix);
@@ -108,7 +108,7 @@ export class CustomLogger extends ConsoleLogger {
   /**
    * Write a 'warn' level log.
    */
-  async warn(message: any, ...optionalParams: any[]) {
+  warn(message: any, ...optionalParams: any[]) {
     if (this.level >= 0 && message.timeStamp !== undefined) {
       const prefix = 'WARN';
       const fileToWriteFullPath = this.getFilePathByPrefix(prefix);
@@ -124,7 +124,7 @@ export class CustomLogger extends ConsoleLogger {
    * Write a 'log' level log.
    */
 
-  async log(message: any, ...optionalParams: any[]) {
+  log(message: any, ...optionalParams: any[]) {
     if (this.level >= 0 && message.timeStamp !== undefined) {
       const prefix = 'LOG';
       const fileToWriteFullPath = this.getFilePathByPrefix(prefix);
