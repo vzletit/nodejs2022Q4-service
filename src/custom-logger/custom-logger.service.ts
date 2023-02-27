@@ -1,7 +1,7 @@
 import { Injectable, ConsoleLogger } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
-import { readdir, stat } from 'node:fs/promises';
+import { readdir, stat, mkdir } from 'node:fs/promises';
 
 @Injectable()
 export class CustomLogger extends ConsoleLogger {
@@ -18,26 +18,61 @@ export class CustomLogger extends ConsoleLogger {
     )}_${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}.log_current`;
   }
 
-  private async getFilePathByPrefix(prefix = 'LOG') {
-    const logDir = path.join(__dirname, '../../', process.env.LOG_DIR || 'log');
+  private async isDirectoryExists(directoryPath: string): Promise<boolean> {
+    fs.access(directoryPath, async (err) => {
+      if (err) {
+        super.warn(
+          `LOG directory ${directoryPath} not found and will be created.`,
+        );
+
+        await mkdir(directoryPath);
+
+        fs.access(directoryPath, async (err) => {
+          if (err) { 
+            process.env.LOG_ENABLED = 'false';
+            console.error(
+              `${directoryPath} Failed to create ${directoryPath}.`,
+            );
+            console.error('Log will NOT be saved to file.');
+            return false;
+          }
+        });
+        return true;
+      }
+    });
+    return true;
+  }
+
+  private async getFilePathByPrefix(prefix: string) {
+    const logDirectory = path.join(
+      __dirname,
+      '../../',
+      process.env.LOG_DIR || 'log',
+    );
+
+    if ((await this.isDirectoryExists(logDirectory)) === false) {
+      return;
+    }
 
     try {
-      const existedCurrentLogFile = (await readdir(logDir)).filter(
+      const existedCurrentLogFile = (await readdir(logDirectory)).filter(
         (file) => file.startsWith(prefix) && file.endsWith('_current'),
       )[0];
 
       return existedCurrentLogFile
-        ? path.join(logDir, existedCurrentLogFile)
-        : path.join(logDir, this.genNewFileName(prefix));
-    } catch (err) {
-      console.log(err);
-    }
+        ? path.join(logDirectory, existedCurrentLogFile)
+        : path.join(logDirectory, this.genNewFileName(prefix));
+    } catch (err) {}
   }
 
-  private async writeLogToFile(data: string, filePath: string): Promise<void> {
-    if (process.env.LOG_ENABLED !== 'true') return;
+  private async writeLogToFile(
+    prefix: string,
+    data: string,
+    filePath: string,
+  ): Promise<void> {
+    if (process.env.LOG_ENABLED !== 'true' || !filePath) return;
 
-    let fileSize = 0;
+    let fileSize: number;
 
     try {
       await fs.promises.access(filePath);
@@ -46,21 +81,19 @@ export class CustomLogger extends ConsoleLogger {
 
     let fileToWrite = filePath;
 
-    if (fileSize / 1000 >= Number(process.env.LOG_LIMIT_FILE_SIZE)) {
+    if (fileSize / 1024 >= Number(process.env.LOG_LIMIT_FILE_SIZE)) {
       const closedLogPath = filePath.replace('.log_current', '.log');
       fs.rename(filePath, closedLogPath, (err) => {
-        if (err) {
-          console.log(err);
-        }
+        console.log('Failed to rename current log file.');
       });
 
-      fileToWrite = await this.getFilePathByPrefix();
+      fileToWrite = await this.getFilePathByPrefix(prefix);
     }
     try {
       const stream = fs.createWriteStream(fileToWrite, { flags: 'a' });
       stream.write(data + '\r\n');
     } catch (err) {
-      console.log(err);
+      console.log('Falied to write to file: ' + fileToWrite);
     }
   }
 
@@ -83,10 +116,11 @@ export class CustomLogger extends ConsoleLogger {
    */
   async error(message: any, ...optionalParams: any[]) {
     if (this.level >= 0 && message.timeStamp !== undefined) {
-      await this.writeLogToFile(
-        this.renderLine(message, 'ERROR'),
-        await this.getFilePathByPrefix('ERROR'),
-      );
+      const prefix = 'ERROR';
+      const fileToWriteFullPath = await this.getFilePathByPrefix(prefix);
+      const formattedLine = this.renderLine(message, prefix);
+
+      await this.writeLogToFile(prefix, formattedLine, fileToWriteFullPath);
       return super.error(this.renderLine(message, ':'));
     }
     super.error(message);
@@ -96,11 +130,12 @@ export class CustomLogger extends ConsoleLogger {
    * Write a 'warn' level log.
    */
   async warn(message: any, ...optionalParams: any[]) {
-    if (this.level >= 1 && message.timeStamp !== undefined) {
-      await this.writeLogToFile(
-        this.renderLine(message, 'WARN'),
-        await this.getFilePathByPrefix('LOG'),
-      );
+    if (this.level >= 0 && message.timeStamp !== undefined) {
+      const prefix = 'WARN';
+      const fileToWriteFullPath = await this.getFilePathByPrefix(prefix);
+      const formattedLine = this.renderLine(message, prefix);
+
+      await this.writeLogToFile(prefix, formattedLine, fileToWriteFullPath);
       return super.warn(this.renderLine(message, ':'));
     }
     super.warn(message);
@@ -111,11 +146,12 @@ export class CustomLogger extends ConsoleLogger {
    */
 
   async log(message: any, ...optionalParams: any[]) {
-    if (this.level >= 2 && message.timeStamp !== undefined) {
-      await this.writeLogToFile(
-        this.renderLine(message, 'LOG'),
-        await this.getFilePathByPrefix('LOG'),
-      );
+    if (this.level >= 0 && message.timeStamp !== undefined) {
+      const prefix = 'LOG';
+      const fileToWriteFullPath = await this.getFilePathByPrefix(prefix);
+      const formattedLine = this.renderLine(message, prefix);
+
+      await this.writeLogToFile(prefix, formattedLine, fileToWriteFullPath);
       return super.log(this.renderLine(message, ':'));
     }
     super.log(message);
