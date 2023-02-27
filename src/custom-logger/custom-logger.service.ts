@@ -28,7 +28,7 @@ export class CustomLogger extends ConsoleLogger {
         await mkdir(directoryPath);
 
         fs.access(directoryPath, async (err) => {
-          if (err) { 
+          if (err) {
             process.env.LOG_ENABLED = 'false';
             console.error(
               `${directoryPath} Failed to create ${directoryPath}.`,

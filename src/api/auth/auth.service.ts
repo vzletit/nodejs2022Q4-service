@@ -88,7 +88,7 @@ export class AuthService {
       throw new ForbiddenException('Not authorized to refresh');
     }
     if (user.refreshToken !== refreshToken) {
-      throw new ForbiddenException('Not authorized to refresh: not equal');
+      throw new ForbiddenException('Not authorized to refresh');
     }
 
     const newAccesstoken = this.generateAccessToken(user);

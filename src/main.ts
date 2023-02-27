@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './api/app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { AllExceptionFilter } from './exceptions/allException.filter';
+import { AllExceptionFilter } from './exceptions/AllException.filter';
 import { CustomLogger } from './custom-logger/custom-logger.service';
 // import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
