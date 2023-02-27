@@ -23,7 +23,6 @@ export class FavoritesController {
   @Post('/track/:trackId')
   async addTrackToFavs(@Param('trackId', ParseUUIDPipe) trackId: any) {
     const track = await this.track.getTrack(trackId);
-    console.log(track);
     await handleUnprocessable(track);
 
     await this.favs.addToFavs('track', trackId);

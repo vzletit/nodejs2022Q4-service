@@ -27,8 +27,6 @@ export class FavoritesService {
     const typeKey = type + 'Fav';
     const keyId = type + 'Id';
 
-    console.log({ typeKey, keyId });
-
     return await this.prisma[typeKey].create({ data: { [keyId]: id } });
   }
 
