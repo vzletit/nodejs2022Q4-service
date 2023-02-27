@@ -57,6 +57,7 @@ CREATE TABLE "User" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "login" VARCHAR(255) NOT NULL,
     "password" VARCHAR(255) NOT NULL,
+    "refreshToken" VARCHAR(255),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "version" INTEGER NOT NULL DEFAULT 1,

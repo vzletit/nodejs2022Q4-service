@@ -36,7 +36,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         throw new UnauthorizedException('Not authorized');
       }
 
-      const user = this.jwtService.verify(token);
+      const user = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET_KEY,
+      });
       request.user = user;
 
       return true;

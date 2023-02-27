@@ -8,7 +8,7 @@ import { TrackModule } from './track/track.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { LoggingMiddleware } from 'src/custom-logger/custom-logger.middleware';
 import { AuthModule } from './auth/auth.module';
-import { JwtAuthGuard } from './auth/auth.guard';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { DocModule } from './doc/doc.module';
 

@@ -17,6 +17,10 @@ export class UserService {
     return await this.prisma.user.findFirst({ where: { login } });
   }
 
+  async getUserById(id: string) {
+    return await this.prisma.user.findFirst({ where: { id } });
+  }
+
   async createUser(createUserDto: UserDto) {
     return await this.prisma.user.create({ data: createUserDto });
   }

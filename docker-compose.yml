@@ -2,8 +2,14 @@ version: "3.5"
 services:
   app:
     
-    #command: sh -c "npm install && npm run migrate:init && npm run start:dev"
+    # Use the following line if Prisma Schema has not been modified"
     command: sh -c "npm install && npm run migrate && npm run start:dev"
+
+    # Uncomment and use the following command string ONCE after each Prisma Schema modification.
+    # (Don't forget to delete container before running "docker-compose up")
+    
+    #command: sh -c "npm install && npm run migrate:init"
+    
     build: .
     ports:
       - ${PORT}:${PORT}

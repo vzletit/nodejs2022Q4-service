@@ -2,6 +2,7 @@
 
 Demo REST API online library for storing music tracks, artists and their albums with the ability to add to favorites. Under the hood uses NestJS and PostgreSQL DB with Prisma ORM.
 
+
 ## Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
@@ -18,10 +19,10 @@ Change directory:
 ```bash
 cd nodejs2022Q4-service 
 ```
-Switch to **dev2** branch:
+Switch to **log/err/auth** branch:
 
 ```bash
-git checkout dev2
+git checkout log/err/auth
 ```
 
 Install NPM modules 
@@ -53,7 +54,42 @@ npm run start:docker
 
 ## API
 
-OpenAPI description can be found in */doc/newApi.yaml* file.
+### User registration
+```
+/auth/signup
+```
+POST body:
+```
+{ 
+    "login": "LOGIN", 
+    "password": "PASSWORD", 
+}
+```
+### User authentication
+```
+/auth/login
+```
+POST body:
+```
+{ 
+    "login": "LOGIN", 
+    "password": "PASSWORD", 
+}
+```
+### Obtaining new access and refresh tokens
+```
+/auth/refresh
+```
+POST body:
+```
+{ 
+    "refreshToken": "REFRESH_TOKEN"    
+}
+```
+
+### Service endpoints
+
+Rest OpenAPI description can be found in */doc/newApi.yaml* file.
 
 ## Vulnerabilities scanning
 
@@ -73,7 +109,7 @@ npm run scan:postgres
 When application is running, open new terminal and enter:
 
 ```
-npm run test
+npm run test:auth
 ```
 
 ### Linting
