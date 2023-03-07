@@ -1,0 +1,51 @@
+version: "3.5"
+services:
+  app:
+    
+    # Use the following line if Prisma Schema has not been modified"
+    command: sh -c "npm install && npm run migrate && npm run start:dev"
+
+    # Uncomment and use the following command string ONCE after each Prisma Schema modification.
+    # (Don't forget to delete container before running "docker-compose up")
+    
+    #command: sh -c "npm install && npm run migrate:init"
+    
+    build: .
+    ports:
+      - ${PORT}:${PORT}
+    working_dir: /app
+    networks:
+      - libnet
+    depends_on: 
+      - postgres
+    volumes:
+      - ./:/app  
+    restart: unless-stopped
+      
+  
+  postgres:    
+    build: ./db
+    env_file:
+      - .env
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    volumes: 
+      - pgdata:/var/lib/postgresql/data    
+#    command: ["postgres", "-c", "logging_collector=true", "-c", "log_statement=all"]
+    networks:
+      - libnet
+    environment:
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    restart: unless-stopped
+    
+
+volumes:
+  pgdata:
+  logs:
+
+networks:
+  libnet:
+    driver: bridge

@@ -1,0 +1,3 @@
+FROM postgres:14-alpine
+EXPOSE 5432
+ENV POSTGRES_HOST_AUTH_METHOD trust
